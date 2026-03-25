@@ -3,11 +3,12 @@ class Error:
     Error object holds the error type, severity level, and description of the
     error in one object. Used to send to the LLM to get fix suggestions.
     '''
-    def __init__(self, error_type: str, error_severity_level: str, error_description: str):
+    def __init__(self, error_type: str, error_severity_level: str, error_description: str, code: str):
         self.error_type = error_type
         self.error_severity_level = error_severity_level
         self.error_description = error_description
         self.fix_suggestion: str | None = None
+        self.code = code
 
     def get_error_type(self) -> str:
         return self.error_type
@@ -17,6 +18,12 @@ class Error:
     
     def get_error_description(self) -> str:
         return self.error_description
+    
+    def get_fix_suggestion(self) -> str:
+        return self.fix_suggestion
+    
+    def get_code(self) -> str:
+        return self.code
     
     def set_fix_suggestion(self, fix_suggestion: str) -> None:
         self.fix_suggestion = fix_suggestion
