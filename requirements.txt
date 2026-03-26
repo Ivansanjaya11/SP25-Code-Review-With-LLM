@@ -1,1 +1,3 @@
 ollama
+pydantic
+pydriller
