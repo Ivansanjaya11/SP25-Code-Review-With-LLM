@@ -41,13 +41,21 @@ class LLM:
         self.client = ollama.Client(host=self.host)
 
     def execute(self, code: str) -> FeedbackOutput:
+        print(f"Requesting feedback.....")
+
         error_response = self.request_error(code)
         errors = self.parse_error_response(error_response, code)
+        
+        print(f"Feedback successfully generated!")
+
+        print(f"Requesting suggestions.....")
+
         errors = self.get_all_fix_suggestions(errors)
+
+        print(f"Suggestions successfully generated!")
 
         feedback_output = FeedbackOutput(errors)
 
-        print(feedback_output)
         return feedback_output
 
     def request_error(self, code: str) -> str:
@@ -158,16 +166,3 @@ class LLM:
         class SuggestionGetterFormat(BaseModel):
                 suggestion: str
         suggestions: list[SuggestionGetterFormat]
-
-"""
-# For testing, uncomment the multiline comments
-
-llm = LLM("llama3:latest")
-
-code = "" \
-        "counter = 0:\n" \
-        "while counter < 5:\n" \
-        "\tprint(counter)" 
-
-llm.execute(code)
-"""

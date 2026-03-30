@@ -1,4 +1,5 @@
 from RepositoryInfo import RepositoryInfo
+from github import PullRequest
 
 class PullRequestInfo:
     '''
@@ -7,13 +8,14 @@ class PullRequestInfo:
     '''
     def __init__(self, pr_id: int, pr_title: str, pr_description: str, 
                  commit_id_list: list[str], changes: str, 
-                 repository_info: RepositoryInfo):
+                 repository_info: RepositoryInfo, pull_request: PullRequest):
         self.pr_id = pr_id
         self.pr_title = pr_title
         self.pr_description = pr_description
         self.commit_id_list = commit_id_list
         self.changes = changes
         self.repository_info = repository_info
+        self.pull_request = pull_request
 
     def get_pr_details(self) -> str:
         pass
@@ -29,6 +31,9 @@ class PullRequestInfo:
     
     def get_title(self) -> str:
         return self.pr_title
+    
+    def get_pull_request(self) -> PullRequest:
+        return self.pull_request
     
     def get_commit_id_list(self) -> list[str]:
         return self.commit_id_list

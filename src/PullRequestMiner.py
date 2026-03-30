@@ -58,7 +58,7 @@ class PullRequestMiner:
             pr_description = pr.body
             pr_info = PullRequestInfo(pr_id, pr_title, pr_description,
                                       commit_id_list, changes,
-                                      self.repository_info)
+                                      self.repository_info, pr)
             self.pr_list.append(pr_info)
 
     def get_pull_request_info_list(self) -> list[PullRequestInfo]:
