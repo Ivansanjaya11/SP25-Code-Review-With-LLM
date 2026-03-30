@@ -2,6 +2,7 @@ from Pipeline import Pipeline
 from PullRequestMiner import PullRequestMiner
 from LLM import LLM
 from Output import Output
+from JSONSaver import JSONSaver
 
 class Pipeline1(Pipeline):
     def __init__(self, repo_url: str, pr_id_list: list[int], model: str):
@@ -17,3 +18,5 @@ class Pipeline1(Pipeline):
             feedback = self.llm.execute(pr.get_changes())
             output = Output(pr, feedback)
             self.output.append(output)
+            json_saver = JSONSaver(output, f"../results/output_{pr.get_id()}.json")
+            json_saver.save()
