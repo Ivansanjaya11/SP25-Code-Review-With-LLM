@@ -48,6 +48,7 @@ class LLM:
         feedback_output = FeedbackOutput(errors)
 
         print(feedback_output)
+        return feedback_output
 
     def request_error(self, code: str) -> str:
         """
