@@ -28,7 +28,7 @@ class PullRequestMiner:
         if not api_key:
             raise RuntimeError("Missing GITHUB_API_KEY. Set it in your environment or .env file.")
 
-        print(f"API Key loaded: {api_key}")
+        print("API Key loaded")
 
         auth = Auth.Token(api_key)
 
