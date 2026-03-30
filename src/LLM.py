@@ -55,7 +55,8 @@ class LLM:
         use LLM to check if there are any errors in the code.
         Will return a json-like string.
         """
-        self.get_error_prompt = self.get_error_prompt.format(
+        code = code.replace("{", "{{").replace("}", "}}")
+        formatted_prompt = self.get_error_prompt.format(
             code = code, # the code in string format containing the changes in a specific pull request mined from the repo
             available_error_types = self.available_error_types
         )
@@ -64,7 +65,7 @@ class LLM:
             model = self.model,
             messages = [
                 {"role": "system", "content": self.system_prompt_error},
-                {"role": "user", "content": self.get_error_prompt}
+                {"role": "user", "content": formatted_prompt}
             ],
             format = self.ErrorListFormat.model_json_schema()
         )
@@ -106,8 +107,9 @@ class LLM:
         severity = error.get_error_severity_level()
         error_description = error.get_error_description()
         code = error.get_code()
+        code = code.replace("{", "{{").replace("}", "}}")
 
-        self.suggestion_prompt = self.suggestion_prompt.format(
+        formatted_prompt = self.suggestion_prompt.format(
             error_type = error_type,
             severity = severity,
             error_description = error_description,
@@ -118,7 +120,7 @@ class LLM:
             model = self.model,
             messages = [
                 {"role": "system", "content": self.system_prompt_suggestion},
-                {"role": "user", "content": self.suggestion_prompt}
+                {"role": "user", "content": formatted_prompt}
             ],
             format = self.SuggestionListFormat.model_json_schema()
         )
