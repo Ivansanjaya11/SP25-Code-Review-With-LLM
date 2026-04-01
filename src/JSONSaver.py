@@ -12,18 +12,20 @@ class JSONSaver:
         self.output = output
         self.path = None
 
-    def create_path(self, feedback: FeedbackOutput, pr_id: int) -> None:
+    def create_path(self, feedback: FeedbackOutput, pr_id: int, repo_name: str) -> None:
         month = feedback.get_timestamp().month
         year = feedback.get_timestamp().year
         day = feedback.get_timestamp().day
         hour = feedback.get_timestamp().hour
         minute = feedback.get_timestamp().minute
 
+        repo_name = "_".join(repo_name.split(" "))
+
         directory = Path("results") / f"{year}_{month}"
 
         os.makedirs(directory)
 
-        filename = f"{day}_{hour}_{minute}_{pr_id}.json"
+        filename = f"{day}_{hour}_{minute}_{repo_name}_{pr_id}.json"
 
         self.path = directory / filename
 
@@ -32,7 +34,7 @@ class JSONSaver:
         feedback = self.output.get_feedback_output()
         test_cases = self.output.get_test_cases()
 
-        self.create_path(feedback, pr_info.get_id())
+        self.create_path(feedback, pr_info.get_id(), pr_info.get_repo_info().get_repo_name())
 
         data = {
             "pr_info": {
