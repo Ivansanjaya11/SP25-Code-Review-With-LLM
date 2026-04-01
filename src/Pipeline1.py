@@ -1,9 +1,10 @@
 from Pipeline import Pipeline
 from PullRequestMiner import PullRequestMiner
 from LLM import LLM
-from Output import Output
 from JSONSaver import JSONSaver
 from TestCaseGenerator import TestCaseGenerator
+from Output import Output
+from pathlib import Path
 
 """
 Pipeline 1:
@@ -18,13 +19,15 @@ class Pipeline1(Pipeline):
         self.test_case_generator = TestCaseGenerator()
         self.llm = LLM(model, prompt_config_path="prompts.json")
        
-    def run(self):
+    def run(self) -> list[Output]:
         self.pr_miner.mine_pr(self.pr_id_list)
 
         for pr in self.pr_miner.get_pull_request_info_list():
             test_cases = self.test_case_generator.generate(pr)
             feedback = self.llm.execute(pr.get_changes())
             output = Output(pr, test_cases, feedback)
-            self.output.append(output)
-            json_saver = JSONSaver(output, f"../results/output_{pr.get_id()}.json")
+            self.output_list.append(output)
+            json_saver = JSONSaver(output)
             json_saver.save()
+
+        return self.output_list

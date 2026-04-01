@@ -1,20 +1,39 @@
 from Output import Output
 import json
 from pathlib import Path
+from FeedbackOutput import FeedbackOutput
+import os
 
 """
 Class that saves to json file
 """
 class JSONSaver:
-    def __init__(self, output: Output, path: Path = Path("results/output.json")):
+    def __init__(self, output: Output):
         self.output = output
-        self.path = path
+        self.path = None
+
+    def create_path(self, feedback: FeedbackOutput, pr_id: int) -> None:
+        month = feedback.get_timestamp().month
+        year = feedback.get_timestamp().year
+        day = feedback.get_timestamp().day
+        hour = feedback.get_timestamp().hour
+        minute = feedback.get_timestamp().minute
+
+        directory = Path("results") / f"{year}_{month}"
+
+        os.makedirs(directory)
+
+        filename = f"{day}_{hour}_{minute}_{pr_id}.json"
+
+        self.path = directory / filename
 
     def save(self):
         pr_info = self.output.get_pr_info()
         feedback = self.output.get_feedback_output()
         test_cases = self.output.get_test_cases()
-    
+
+        self.create_path(feedback, pr_info.get_id())
+
         data = {
             "pr_info": {
                 "pr_id": pr_info.get_id(),

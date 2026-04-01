@@ -1,4 +1,4 @@
-import datetime
+from _datetime import datetime
 from Error import Error
 
 class FeedbackOutput:
@@ -6,7 +6,7 @@ class FeedbackOutput:
     FeedbackOutput contains the list of Error objects and 
     the timestamp (the time when the feedback is generated for the user)
     '''
-    def __init__(self, errors: list[Error], timestamp = datetime.datetime.now().replace(microsecond=0)):
+    def __init__(self, errors: list[Error], timestamp: datetime = datetime.now().replace(microsecond=0)):
         self.errors = errors
         self.timestamp = timestamp
 

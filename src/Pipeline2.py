@@ -1,6 +1,7 @@
 from Pipeline import Pipeline
 from pathlib import Path
 from JSONParser import JSONParser
+from Output import Output
 
 """
 Pipeline 2:
@@ -12,9 +13,11 @@ class Pipeline2(Pipeline):
         super().__init__()
         self.path = path
 
-    def run(self):
+    def run(self) -> list[Output]:
         json_parser = JSONParser(self.path)
 
         output = json_parser.parse()
 
-        return output
+        self.output_list.append(output)
+
+        return self.output_list
