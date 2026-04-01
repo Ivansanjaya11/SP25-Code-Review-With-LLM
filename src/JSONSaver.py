@@ -1,14 +1,19 @@
 from Output import Output
 import json
+from pathlib import Path
 
+"""
+Class that saves to json file
+"""
 class JSONSaver:
-    def __init__(self, output: Output, path: str = "results/output.json"):
+    def __init__(self, output: Output, path: Path = Path("results/output.json")):
         self.output = output
         self.path = path
 
     def save(self):
         pr_info = self.output.get_pr_info()
         feedback = self.output.get_feedback_output()
+        test_cases = self.output.get_test_cases()
     
         data = {
             "pr_info": {
@@ -22,13 +27,22 @@ class JSONSaver:
                 "repo_name": pr_info.get_repo_info().get_repo_name(),
                 "repo_url": pr_info.get_repo_info().get_repo_url(),
                 "repo_branches": pr_info.get_repo_info().get_branches_names(),
-                "repo_commit_id_list": pr_info.get_repo_info().get_commit_id_list()
+                "repo_commit_id_list": pr_info.get_repo_info().get_commit_id_list(),
+                "repo_changes": pr_info.get_repo_info().get_changes()
             },
+            "test_cases": [
+                {
+                    "test_filename": test_case.get_test_filename(),
+                    "test_filepath": test_case.get_test_filepath().resolve(),
+                    "test": test_case.get_test()
+                } for test_case in test_cases
+            ],
             "errors": [
                 {
                     "error_type": error.get_error_type(),
                     "severity": error.get_error_severity_level(),
                     "description": error.get_error_description(),
+                    "code": error.get_code(),
                     "suggestion": error.get_fix_suggestion()
                 }
                 for error in feedback.get_all_errors()
@@ -36,5 +50,5 @@ class JSONSaver:
             "timestamp": str(feedback.get_timestamp())
         }
 
-        with open(self.path, "w") as file:
+        with open(self.path.resolve(), "w") as file:
             json.dump(data, file, indent=4)

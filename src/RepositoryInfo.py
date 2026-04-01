@@ -24,6 +24,9 @@ class RepositoryInfo:
     def get_commit_id_list(self) -> list[str]:
         return self.commit_id_list
 
+    def get_changes(self) -> list[str]:
+        return self.changes
+
     def set_branches_names(self, branches_names) -> None:
         self.branches_names = branches_names
 

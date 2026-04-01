@@ -2,7 +2,6 @@ from TestCase import TestCase
 from PullRequestInfo import PullRequestInfo
 from pathlib import Path
 import requests
-import os
 import sys
 import builtins
 import importlib.util

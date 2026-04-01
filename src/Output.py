@@ -3,9 +3,11 @@ from FeedbackOutput import FeedbackOutput
 from TestCase import TestCase
 
 class Output:
-    def __init__(self, pr_info: PullRequestInfo, test_cases: list[TestCase], feedback_output: FeedbackOutput):
+    def __init__(self, pr_info: PullRequestInfo = None,
+                 test_cases: list[TestCase] = None,
+                 feedback_output: FeedbackOutput = None):
         self.pr_info = pr_info
-        # self.test_cases = test_cases
+        self.test_cases = test_cases
         self.feedback_output = feedback_output
 
     def get_pr_info(self) -> PullRequestInfo:

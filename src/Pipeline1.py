@@ -5,6 +5,11 @@ from Output import Output
 from JSONSaver import JSONSaver
 from TestCaseGenerator import TestCaseGenerator
 
+"""
+Pipeline 1:
+mines Github repo, get a specific pull request, generate test cases,
+get errors and their fix suggestions, save the result
+"""
 class Pipeline1(Pipeline):
     def __init__(self, repo_url: str, pr_id_list: list[int], model: str):
         super().__init__()

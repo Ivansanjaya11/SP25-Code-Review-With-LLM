@@ -8,7 +8,7 @@ class PullRequestInfo:
     '''
     def __init__(self, pr_id: int, pr_title: str, pr_description: str, 
                  commit_id_list: list[str], changes: str, 
-                 repository_info: RepositoryInfo, pull_request: PullRequest):
+                 repository_info: RepositoryInfo, pull_request: PullRequest = None):
         self.pr_id = pr_id
         self.pr_title = pr_title
         self.pr_description = pr_description
@@ -18,7 +18,14 @@ class PullRequestInfo:
         self.pull_request = pull_request
 
     def get_pr_details(self) -> str:
-        pass
+        string = ""
+
+        string += "From repository: " + self.repository_info.get_repo_name() + "\n"
+        string += "pull request id: " + str(self.pr_id) + "\n"
+        string += "title: " + self.pr_title + "\n"
+        string += "description:\n" + self.pr_description
+
+        print(string)
 
     def get_changes(self) -> str:
         return self.changes
