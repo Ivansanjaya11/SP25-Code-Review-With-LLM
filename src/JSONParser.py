@@ -11,38 +11,95 @@ from Error import Error
 Class that parses json file
 """
 class JSONParser:
-    def __init__(self, path: Path):
-        self.path = path
+    def __init__(self):
+        # list of list of outputs. The outer list represents groupings by month & year
+        # inner list represents each feedback saved in that month & year
+        self.outputs = []
 
-    def set_path(self, path: Path) -> None:
-        self.path = path
+    # for now, the filter is based on month and year only
+    def filter_and_parse(self, repo_name = "", repo_id = -1, month=-1, year=-1, day=-1) -> list[list[Output]]:
+        # parse every json files in results directory recursively
+        if repo_name == "" and repo_id == -1 and month == -1 and year == -1 and day == -1:
+            self.parse_everything()
 
-    def parse(self) -> Output:
+        # parse by a specific year and month
+        if month != -1 and year != -1:
+            self.parse_by_month_year(month, year)
+
+        return self.outputs
+
+    def parse_by_month_year(self, month, year) -> None:
+        output_list = []
+
+        # create the path of the specific month and year directory
+        a_dir_path = (Path("../results") / f"{str(year)}_{str(month)}").resolve()
+
+        # if the directory of that specific month and year doesn't exist, append an empty list
+        if not self._check_dir(month, year):
+            self.outputs.append([])
+            return
+
+        # iterate through each file in that year_month directory
+        # parse the json file
+        for file in a_dir_path.iterdir():
+            a_file_path = a_dir_path / file
+            output = self.parse(a_file_path)
+            output_list.append(output)
+
+        self.outputs.append(output_list)
+
+    def parse_everything(self) -> None:
+        # iterate through each year_month directory
+        for directory in Path("../results").iterdir():
+            output_list = []
+
+            year = directory.name.split("_")[0]
+            month = directory.name.split("_")[1]
+
+            # create the path of the specific month and year directory
+            a_dir_path = (Path("../results") / f"{str(year)}_{str(month)}").resolve()
+
+            # iterate through each file in each year_month_directory
+            # parse the json file
+            for file in a_dir_path.iterdir():
+                a_file_path = a_dir_path / file
+                output = self.parse(a_file_path)
+                output_list.append(output)
+
+            self.outputs.append(output_list)
+
+    def parse(self, path: Path) -> Output:
+        # load the json file
         try:
-            with open(self.path.resolve(), 'r') as f:
+            with open(path.resolve(), 'r', encoding = "utf-8") as f:
                 data = json.load(f)
         except FileNotFoundError:
             print("File not found")
-        except json.JSONDecodeError:
-            print("Failed to decode json file")
+        except json.JSONDecodeError as e:
+            print(f"Failed to decode json file: {e}")
 
+        # get the dictionary of info of the feedbacks
         pr_info_dict = data["pr_info"]
         repo_info_dict = data["repository_info"]
         test_dict_list = data["test_cases"]
         errors_dict_list = data["errors"]
         timestamp = data["timestamp"]
 
-        pr_info = self.create_pr(pr_info_dict, repo_info_dict)
+        # create pr object
+        pr_info = self._create_pr(pr_info_dict, repo_info_dict)
 
-        feedback = self.create_feedback(errors_dict_list, timestamp)
+        # create feedback object
+        feedback = self._create_feedback(errors_dict_list, timestamp)
 
-        test_cases = self.create_test_cases(test_dict_list)
+        # create test case object
+        test_cases = self._create_test_cases(test_dict_list)
 
+        # create output object
         output = Output(pr_info, test_cases, feedback)
 
         return output
 
-    def create_test_cases(self, test_dict_list) -> list[TestCase]:
+    def _create_test_cases(self, test_dict_list) -> list[TestCase]:
         test_cases = []
 
         for test_case in test_dict_list:
@@ -56,7 +113,7 @@ class JSONParser:
 
         return test_cases
 
-    def create_feedback(self, errors_dict_list, timestamp) -> FeedbackOutput:
+    def _create_feedback(self, errors_dict_list, timestamp) -> FeedbackOutput:
         feedback = FeedbackOutput([], timestamp)
 
         for an_error_info in errors_dict_list:
@@ -73,20 +130,20 @@ class JSONParser:
         return feedback
 
 
-    def create_pr(self, pr_info_dict, repo_info_dict) -> PullRequestInfo:
+    def _create_pr(self, pr_info_dict, repo_info_dict) -> PullRequestInfo:
         pr_id = pr_info_dict["pr_id"]
         pr_title = pr_info_dict["pr_title"]
         pr_description = pr_info_dict["pr_description"]
         pr_changes = pr_info_dict["pr_changes"]
         pr_commit_id_list = pr_info_dict["pr_commit_id_list"]
 
-        repo_info = self.create_repo(repo_info_dict)
+        repo_info = self._create_repo(repo_info_dict)
 
         pull_request_info = PullRequestInfo(pr_id, pr_title, pr_description, pr_commit_id_list, pr_changes, repo_info)
 
         return pull_request_info
 
-    def create_repo(self, repo_info_dict):
+    def _create_repo(self, repo_info_dict) -> RepositoryInfo:
         repo_name = repo_info_dict["repo_name"]
         repo_url = repo_info_dict["repo_url"]
         repo_branches = repo_info_dict["repo_branches"]
@@ -96,3 +153,7 @@ class JSONParser:
         repo_info = RepositoryInfo(repo_name, repo_url, repo_branches, repo_commit_id_list, repo_changes)
 
         return repo_info
+
+    def _check_dir(self, month, year) -> bool:
+        a_dir_path = (Path("../results") / f"{str(year)}_{str(month)}").resolve()
+        return a_dir_path.is_dir()

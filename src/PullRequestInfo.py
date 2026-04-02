@@ -17,7 +17,7 @@ class PullRequestInfo:
         self.repository_info = repository_info
         self.pull_request = pull_request
 
-    def get_pr_details(self) -> str:
+    def get_pr_details(self) -> None:
         string = ""
 
         string += "From repository: " + self.repository_info.get_repo_name() + "\n"

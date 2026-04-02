@@ -1,3 +1,4 @@
+import types
 from TestCase import TestCase
 from PullRequestInfo import PullRequestInfo
 from pathlib import Path
@@ -10,6 +11,9 @@ from hypothesis.extra import ghostwriter
 from MockDummy import MockDummy
 import shutil
 
+"""
+Class that generates test cases
+"""
 class TestCaseGenerator:
     def __init__(self):
         self.generated_test_cases = []
@@ -134,14 +138,14 @@ class TestCaseGenerator:
             sys.modules.update(original_modules)
             print(f"original import and module fetched back.")
 
-    def _mock_import(self, name, globals=None, locals=None, fromlist=(), level=0):
+    def _mock_import(self, name, globals=None, locals=None, fromlist=(), level=0) -> MockDummy | types.ModuleType:
             # if environment doesn't have the dependency, then create a dummy module
             if name not in sys.modules:
                 sys.modules[name] = MockDummy()
                 print(f"Mock module created for {name}!")
             return sys.modules[name]
     
-    def _delete_dir(self, directory: Path):
+    def _delete_dir(self, directory: Path) -> None:
         if  directory.exists() and directory.is_dir():
             try:
                 shutil.rmtree(str(directory))

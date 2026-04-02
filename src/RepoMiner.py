@@ -53,7 +53,6 @@ class RepoMiner:
         self.repository_info.set_commit_id_list(commit_id_list)
         self.repository_info.set_repo_description(repo_description)
         self.repository_info.set_branches_names(repo_branches_names)
-            
 
     def get_repository_info(self) -> RepositoryInfo:
         return self.repository_info

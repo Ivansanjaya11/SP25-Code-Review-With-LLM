@@ -18,3 +18,24 @@ class Output:
 
     def get_feedback_output(self) -> FeedbackOutput:
         return self.feedback_output
+
+    def __str__(self) -> str:
+        string = ""
+
+        pr_id = self.pr_info.get_id()
+        pr_description = self.pr_info.get_description()
+        pr_title = self.pr_info.get_title()
+
+        test_cases = [test_case.get_test_filename() for test_case in self.test_cases]
+
+        timestamp = self.feedback_output.get_timestamp()
+
+        string += "PR ID: " + str(pr_id) + "\n\n"
+        string += "Title: " + pr_title + "\n\n"
+        string += "Description:\n" + pr_description + "\n\n"
+
+        string += "Test cases names:\n" + str(test_cases) + "\n\n"
+
+        string += "Timestamp: " + str(timestamp) + "\n\n"
+
+        return string

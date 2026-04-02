@@ -21,15 +21,15 @@ class JSONSaver:
 
         repo_name = "_".join(repo_name.split(" "))
 
-        directory = Path("results") / f"{year}_{month}"
+        directory = Path("../results") / f"{year}_{month}"
 
-        os.makedirs(directory)
+        os.makedirs(directory, exist_ok=True)
 
-        filename = f"{day}_{hour}_{minute}_{repo_name}_{pr_id}.json"
+        filename = f"{year}_{month}_{day}_{hour}_{minute}_{repo_name}_{pr_id}.json"
 
         self.path = directory / filename
 
-    def save(self):
+    def save(self) -> None:
         pr_info = self.output.get_pr_info()
         feedback = self.output.get_feedback_output()
         test_cases = self.output.get_test_cases()
@@ -54,7 +54,7 @@ class JSONSaver:
             "test_cases": [
                 {
                     "test_filename": test_case.get_test_filename(),
-                    "test_filepath": test_case.get_test_filepath().resolve(),
+                    "test_filepath": str(test_case.get_test_filepath().resolve()),
                     "test": test_case.get_test()
                 } for test_case in test_cases
             ],

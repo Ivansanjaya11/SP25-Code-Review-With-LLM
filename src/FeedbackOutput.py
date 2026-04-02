@@ -16,10 +16,10 @@ class FeedbackOutput:
     def get_timestamp(self) -> datetime:
         return self.timestamp
 
-    def add_error(self, error: Error):
+    def add_error(self, error: Error) -> None:
         self.errors.append(error)
     
-    def __str__(self):
+    def __str__(self) -> str:
         string = f"Timestamp: {self.timestamp}\n"
 
         for error in self.errors:

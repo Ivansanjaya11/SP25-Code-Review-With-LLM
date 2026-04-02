@@ -5,7 +5,6 @@ from github import Github, Auth
 from dotenv import load_dotenv
 import os
 
-
 class PullRequestMiner:
     '''
     This class mines a specific pull request in a GitHub repository and creates PullRequestInfo objects from the mined
