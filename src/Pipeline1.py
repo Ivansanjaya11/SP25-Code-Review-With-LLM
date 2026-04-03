@@ -4,6 +4,7 @@ from LLM import LLM
 from JSONSaver import JSONSaver
 from TestCaseGenerator import TestCaseGenerator
 from Output import Output
+from PDFGenerator import PDFGenerator
 
 """
 Pipeline 1:
@@ -40,16 +41,11 @@ class Pipeline1(Pipeline):
 
             # step 6: generate pdf (optional)
             if self.is_pdf:
-                self.generate_pdf()
+                self.generate_pdf(output)
 
         return self.output_list
 
-    # create a PDFGenerator object
-    # run the method that generates pdf and stores it
-    # prints a confirmation message
-    def generate_pdf(self) -> None:
-        # use timestamp and other information to dynamically create filename
-        # create a folder "generated_pdf"
-        # generated pdf automatically put there
-        # <ADD HERE>
-        pass
+    def generate_pdf(self, output: Output) -> None:
+        pdf = PDFGenerator(output)
+        pdf.generate()
+        print('PDF Generated!')
