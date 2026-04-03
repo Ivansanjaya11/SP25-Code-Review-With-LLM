@@ -215,5 +215,11 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# output files in results folder
-results/*.json
+# Results folder
+results/
+
+# Test case folder
+test_case_out/
+
+# PDF folder
+generated_pdf/
