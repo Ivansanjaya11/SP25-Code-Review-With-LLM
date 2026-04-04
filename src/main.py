@@ -14,7 +14,7 @@ if __name__ == "__main__":
     pr_id_list = [7217]
     ollama_model = "llama3:latest"
 
-    controller.run([repo_url, pr_id_list, ollama_model], 1)
-    #controller.run([4, 5, 2026, 2026], 2)
+    #controller.run([repo_url, pr_id_list, ollama_model], 1)
+    controller.run([4, 5, 2026, 2026], 2)
     #controller.run([-1, -1, -1, -1], 2)
 

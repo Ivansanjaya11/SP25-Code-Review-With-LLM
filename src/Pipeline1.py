@@ -46,6 +46,6 @@ class Pipeline1(Pipeline):
         return self.output_list
 
     def generate_pdf(self, output: Output) -> None:
-        pdf = PDFGenerator(output)
-        pdf.generate()
-        print('PDF Generated!')
+            pdf = PDFGenerator(output)
+            pdf.generate()
+            print('PDF Generated!')

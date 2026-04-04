@@ -6,6 +6,7 @@ from PullRequestInfo import PullRequestInfo
 from RepositoryInfo import RepositoryInfo
 from TestCase import TestCase
 from Error import Error
+from datetime import datetime
 
 """
 Class that parses json file
@@ -17,7 +18,7 @@ class JSONParser:
         self.outputs = []
 
     # for now, the filter is based on month and year only
-    def filter_and_parse(self, repo_name = "", repo_id = -1, month=-1, year=-1, day=-1) -> list[list[Output]]:
+    def filter_and_parse(self, repo_name = "", repo_id = -1, month=-1, year=-1, day=-1) -> list[Output]:
         # parse every json files in results directory recursively
         if repo_name == "" and repo_id == -1 and month == -1 and year == -1 and day == -1:
             self.parse_everything()
@@ -29,14 +30,12 @@ class JSONParser:
         return self.outputs
 
     def parse_by_month_year(self, month, year) -> None:
-        output_list = []
 
         # create the path of the specific month and year directory
         a_dir_path = (Path("../results") / f"{str(year)}_{str(month)}").resolve()
 
         # if the directory of that specific month and year doesn't exist, append an empty list
         if not self._check_dir(month, year):
-            self.outputs.append([])
             return
 
         # iterate through each file in that year_month directory
@@ -44,9 +43,7 @@ class JSONParser:
         for file in a_dir_path.iterdir():
             a_file_path = a_dir_path / file
             output = self.parse(a_file_path)
-            output_list.append(output)
-
-        self.outputs.append(output_list)
+            self.outputs.append(output)
 
     def parse_everything(self) -> None:
         # iterate through each year_month directory
@@ -83,7 +80,7 @@ class JSONParser:
         repo_info_dict = data["repository_info"]
         test_dict_list = data["test_cases"]
         errors_dict_list = data["errors"]
-        timestamp = data["timestamp"]
+        timestamp = datetime.strptime(data["timestamp"], "%Y-%m-%d %H:%M:%S")
 
         # create pr object
         pr_info = self._create_pr(pr_info_dict, repo_info_dict)

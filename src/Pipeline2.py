@@ -1,6 +1,7 @@
 from Pipeline import Pipeline
 from JSONParser import JSONParser
 from Output import Output
+from src.PDFGenerator import PDFGenerator
 
 """
 Pipeline 2:
@@ -8,24 +9,35 @@ Given a path to a json file,
 Parse it and get all the information about previously saved result from pipeline 1
 """
 class Pipeline2(Pipeline):
-    def __init__(self, month: int, year: int):
+    def __init__(self, month1: int, month2: int, year1: int, year2: int, is_pdf: bool = True):
         super().__init__()
-        self.month = month
-        self.year = year
+        self.month1 = month1
+        self.month2 = month2
+        self.year1 = year1
+        self.year2 = year2
+        self.is_pdf = is_pdf
 
-    def run(self) -> list[list[Output]]:
+    def parse(self, month: int, year: int) -> list[Output]:
         json_parser = JSONParser()
-        output = json_parser.filter_and_parse(month=self.month, year=self.year)
-        self.output_list = output
+        self.output_list = json_parser.filter_and_parse(month=month, year=year)
+
+        if self.is_pdf:
+            self.generate_pdf(self.output_list)
 
         return self.output_list
 
-    # create a PDFGenerator object
-    # run the method that generates pdf and stores it
-    # prints a confirmation message
-    def generate_pdf(self) -> None:
-        # use timestamp and other information to dynamically create filename
-        # create a folder "generated_pdf"
-        # generated pdf automatically put there
-        # <ADD HERE>
-        pass
+    def run(self) -> list[list[Output]]:
+        outputs_list = []
+
+        for year in range(self.year1, self.year2 + 1):
+            for month in range(self.month1, self.month2 + 1):
+                output_list = self.parse(month, year)
+                outputs_list.append(output_list)
+
+        return outputs_list
+
+    def generate_pdf(self, output_list: list[Output]) -> None:
+        for out in output_list:
+            pdf = PDFGenerator(out)
+            pdf.generate()
+            print("PDF generated!")

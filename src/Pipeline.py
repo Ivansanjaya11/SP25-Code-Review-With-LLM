@@ -5,5 +5,5 @@ class Pipeline:
     def run(self) -> None:
         pass
 
-    def generate_pdf(self) -> None:
+    def generate_pdf(self, output_list) -> None:
         pass

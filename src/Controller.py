@@ -23,9 +23,9 @@ class Controller:
 
     def send_to_view2(self, output_list: list[list[Output]]):
         # needs to be changes after making the interface
-        for i in output_list:
-            for j in i:
-                print(j)
+        #for i in output_list:
+        #    for j in i:
+        #        print(j)
         print("reached sent to view2!")
 
     def run(self, args: list[Any], pipeline_type: int = 1) -> None:
@@ -43,7 +43,7 @@ class Controller:
                 year1 = args[2]
                 year2 = args[3]
 
-                self.model.run_pipeline2_range(month1, month2, year1, year2)
+                self.model.run_pipeline2(month1, month2, year1, year2)
 
             case _:
                 print("Unknown pipeline!")

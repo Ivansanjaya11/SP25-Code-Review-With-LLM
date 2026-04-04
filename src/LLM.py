@@ -3,9 +3,10 @@ import json
 from Error import Error
 from FeedbackOutput import FeedbackOutput
 from pydantic import BaseModel
+from pathlib import Path
 
 class LLM:
-    def __init__(self, model, prompt_config_path="src/prompts.json", host="http://localhost:11434"):
+    def __init__(self, model, prompt_config_path=Path("src/prompts.json"), host="http://localhost:11434"):
         self.model = model
         self.prompt_config_path = prompt_config_path
         self.host = host
