@@ -17,7 +17,7 @@ class Pipeline1(Pipeline):
         self.pr_id_list = pr_id_list
         self.pr_miner = PullRequestMiner(repo_url)
         self.test_case_generator = TestCaseGenerator()
-        self.llm = LLM(model, prompt_config_path="prompts.json")
+        self.llm = LLM(model)
         self.is_pdf = is_pdf
        
     def run(self) -> list[Output]:
@@ -26,7 +26,11 @@ class Pipeline1(Pipeline):
 
         for pr in self.pr_miner.get_pull_request_info_list():
             # step 2: generate test cases
-            test_cases = self.test_case_generator.generate(pr)
+            try:
+                test_cases = self.test_case_generator.generate(pr)
+            except Exception as e:
+                print(f"Test case generation failed: {e}")
+                test_cases = []
 
             # step 3: get errors and their suggestions
             feedback = self.llm.execute(pr.get_changes())

@@ -46,7 +46,8 @@ class RepoMiner:
         for _, commit in enumerate(self.repository.traverse_commits()):
             changes = ""
             for file in commit.modified_files:
-                changes += file.diff
+                for _, line in file.diff_parsed["added"]:
+                    changes += line + "\n"
 
             commit_id_list.append(commit.hash)
 

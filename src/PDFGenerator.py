@@ -21,7 +21,8 @@ class PDFGenerator:
 
         repo_name = "_".join(repo_name.split(" "))
 
-        directory = Path("../generated_pdf") / f"{year}_{month}"
+        base_dir = Path(os.path.dirname(os.path.abspath(__file__)))
+        directory = base_dir / ".." / "generated_pdf" / f"{year}_{month}"
 
         os.makedirs(directory, exist_ok=True)
 

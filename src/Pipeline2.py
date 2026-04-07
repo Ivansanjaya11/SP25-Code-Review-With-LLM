@@ -1,7 +1,7 @@
 from Pipeline import Pipeline
 from JSONParser import JSONParser
 from Output import Output
-from src.PDFGenerator import PDFGenerator
+from PDFGenerator import PDFGenerator
 
 """
 Pipeline 2:
