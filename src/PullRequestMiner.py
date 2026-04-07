@@ -44,21 +44,26 @@ class PullRequestMiner:
                 pr = repo.get_pull(pr_id)
                 commit_list = pr.get_commits()
                 commit_id_list = [commit.sha for commit in commit_list]
+
+                changes = ""
+
+                for commit in pr.get_commits():
+                    for file in commit.files:
+                        for line in file.patch.splitlines():
+                            if line.startswith('+') and not line.startswith('+++'):
+                                changes += line[1:] + "\n"
+
+                pr_title = pr.title
+                pr_description = pr.body
+                pr_info = PullRequestInfo(pr_id, pr_title, pr_description,
+                                        commit_id_list, changes,
+                                        self.repository_info, pr)
+                self.pr_list.append(pr_info)
             except Exception as e:
                 print(f"Error retrieving the pull request: {e}")
+                continue
 
-            changes = ""
-
-            for commit in pr.get_commits():
-                for file in commit.files:
-                    changes += file.patch
-
-            pr_title = pr.title
-            pr_description = pr.body
-            pr_info = PullRequestInfo(pr_id, pr_title, pr_description,
-                                      commit_id_list, changes,
-                                      self.repository_info, pr)
-            self.pr_list.append(pr_info)
+            
 
     def get_pull_request_info_list(self) -> list[PullRequestInfo]:
         return self.pr_list
