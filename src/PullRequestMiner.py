@@ -15,6 +15,7 @@ class PullRequestMiner:
         self.repository = Repository(repo_url)
         self.repo_name = repo_url.split("/")[-1]
         self.repo_owner = repo_url.split("/")[-2]
+        self.repo_url = repo_url
         self.repository_info = RepositoryInfo(self.repo_name, repo_url, [])
         self.pr_list = []
         self.g = self.set_up_github_api()
@@ -60,7 +61,7 @@ class PullRequestMiner:
                                         self.repository_info, pr)
                 self.pr_list.append(pr_info)
             except Exception as e:
-                print(f"Error retrieving the pull request: {e}")
+                print(f"Error retrieving the pull request for {self.repo_url}: {e}")
                 continue
 
             

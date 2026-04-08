@@ -18,24 +18,19 @@ class Controller:
         self.view = view
 
     def send_to_view1(self, output_list: list[Output]):
-        # needs to be changes after making the interface
-        print("reached sent to view1!")
+        self.view.receive_output_1(output_list)
 
     def send_to_view2(self, output_list: list[list[Output]]):
-        # needs to be changes after making the interface
-        #for i in output_list:
-        #    for j in i:
-        #        print(j)
-        print("reached sent to view2!")
+        self.view.receive_output_2(output_list)
 
-    def run(self, args: list[Any], pipeline_type: int = 1) -> None:
+    def run(self, args: list[Any], pipeline_type: int = 1, is_pdf: bool = True) -> None:
         match pipeline_type:
             case 1: # pipeline 1
                 repo_url = args[0]
                 pr_id_list = args[1]
                 ollama_model = args[2]
 
-                self.model.run_pipeline1(repo_url, pr_id_list, ollama_model)
+                self.model.run_pipeline1(repo_url, pr_id_list, ollama_model, is_pdf)
 
             case 2: # pipeline 2
                 month1 = args[0]
@@ -43,7 +38,7 @@ class Controller:
                 year1 = args[2]
                 year2 = args[3]
 
-                self.model.run_pipeline2(month1, month2, year1, year2)
+                self.model.run_pipeline2(month1, month2, year1, year2, is_pdf)
 
             case _:
                 print("Unknown pipeline!")
