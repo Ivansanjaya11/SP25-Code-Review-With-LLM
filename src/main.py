@@ -10,4 +10,4 @@ if __name__ == "__main__":
     controller.set_model(model)
     controller.set_view(view)
 
-    view.run()
+    view.mainloop()
