@@ -1,6 +1,6 @@
-from Pipeline1 import Pipeline1
-from Pipeline2 import Pipeline2
-from Output import Output
+from src.code_review_with_llm.model.Pipeline1 import Pipeline1
+from src.code_review_with_llm.model.Pipeline2 import Pipeline2
+from src.code_review_with_llm.output_objects.Output import Output
 
 """
 Model class based on the MVC architecture.

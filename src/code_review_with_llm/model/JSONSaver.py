@@ -1,7 +1,7 @@
-from Output import Output
+from src.code_review_with_llm.output_objects.Output import Output
 import json
 from pathlib import Path
-from FeedbackOutput import FeedbackOutput
+from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
 import os
 
 """

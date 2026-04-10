@@ -1,12 +1,12 @@
 import ollama
 import json
-from Error import Error
-from FeedbackOutput import FeedbackOutput
+from src.code_review_with_llm.output_objects.Error import Error
+from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
 from pydantic import BaseModel
 from pathlib import Path
 
 class LLM:
-    def __init__(self, model, prompt_config_path=Path("prompts.json"), host="http://localhost:11434"):
+    def __init__(self, model, prompt_config_path=Path("../../prompts.json"), host="http://localhost:11434"):
         self.model = model
         self.prompt_config_path = prompt_config_path
         self.host = host

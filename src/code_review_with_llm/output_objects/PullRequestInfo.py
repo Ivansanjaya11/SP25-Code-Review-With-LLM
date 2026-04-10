@@ -1,4 +1,4 @@
-from RepositoryInfo import RepositoryInfo
+from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
 from github import PullRequest
 
 class PullRequestInfo:

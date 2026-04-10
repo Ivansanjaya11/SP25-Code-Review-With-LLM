@@ -1,6 +1,6 @@
 import types
-from TestCase import TestCase
-from PullRequestInfo import PullRequestInfo
+from src.code_review_with_llm.output_objects.TestCase import TestCase
+from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
 from pathlib import Path
 import requests
 import sys
@@ -8,7 +8,7 @@ import builtins
 import importlib.util
 import inspect
 from hypothesis.extra import ghostwriter
-from MockDummy import MockDummy
+from src.code_review_with_llm.model.MockDummy import MockDummy
 import shutil
 
 """

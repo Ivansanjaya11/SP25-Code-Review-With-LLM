@@ -1,6 +1,6 @@
-from PullRequestInfo import PullRequestInfo
-from FeedbackOutput import FeedbackOutput
-from TestCase import TestCase
+from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
+from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
+from src.code_review_with_llm.output_objects.TestCase import TestCase
 
 class Output:
     def __init__(self, pr_info: PullRequestInfo = None,

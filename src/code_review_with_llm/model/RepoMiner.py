@@ -1,7 +1,5 @@
 from pydriller import Repository
-from RepositoryInfo import RepositoryInfo
-from PullRequestInfo import PullRequestInfo
-from git import Repo
+from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
 from github import Github, Auth
 from dotenv import load_dotenv
 import os

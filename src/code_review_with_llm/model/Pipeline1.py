@@ -1,10 +1,10 @@
-from Pipeline import Pipeline
-from PullRequestMiner import PullRequestMiner
-from LLM import LLM
-from JSONSaver import JSONSaver
-from TestCaseGenerator import TestCaseGenerator
-from Output import Output
-from PDFGenerator import PDFGenerator
+from src.code_review_with_llm.model.Pipeline import Pipeline
+from src.code_review_with_llm.model.PullRequestMiner import PullRequestMiner
+from src.code_review_with_llm.model.LLM import LLM
+from src.code_review_with_llm.model.JSONSaver import JSONSaver
+from src.code_review_with_llm.model.TestCaseGenerator import TestCaseGenerator
+from src.code_review_with_llm.output_objects.Output import Output
+from src.code_review_with_llm.model.PDFGenerator import PDFGenerator
 
 """
 Pipeline 1:
