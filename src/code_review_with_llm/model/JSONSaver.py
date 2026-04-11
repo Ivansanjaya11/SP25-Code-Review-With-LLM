@@ -21,8 +21,7 @@ class JSONSaver:
 
         repo_name = "_".join(repo_name.split(" "))
 
-        base_dir = Path(os.path.dirname(os.path.abspath(__file__)))
-        directory = base_dir / ".." / "results" / f"{year}_{month}"
+        directory = (Path("results") / f"{str(year)}_{str(month)}")
 
         os.makedirs(directory, exist_ok=True)
 

@@ -1,6 +1,7 @@
 from src.code_review_with_llm.output_objects.Output import Output
 from pathlib import Path
 import json
+import os
 from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
 from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
 from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
@@ -31,8 +32,8 @@ class JSONParser:
 
     def parse_by_month_year(self, month, year) -> None:
 
-        # create the path of the specific month and year directory
-        a_dir_path = (Path("../../../results") / f"{str(year)}_{str(month)}").resolve()
+        # create the path of the specific month and year director
+        a_dir_path = (Path("results") / f"{str(year)}_{str(month)}").resolve()
 
         # if the directory of that specific month and year doesn't exist, append an empty list
         if not self._check_dir(month, year):
@@ -47,14 +48,14 @@ class JSONParser:
 
     def parse_everything(self) -> None:
         # iterate through each year_month directory
-        for directory in Path("../../../results").iterdir():
+        for directory in Path("results").iterdir():
             output_list = []
 
             year = directory.name.split("_")[0]
             month = directory.name.split("_")[1]
 
             # create the path of the specific month and year directory
-            a_dir_path = (Path("../../../results") / f"{str(year)}_{str(month)}").resolve()
+            a_dir_path = (Path("results") / f"{str(year)}_{str(month)}").resolve()
 
             # iterate through each file in each year_month_directory
             # parse the json file
@@ -152,5 +153,5 @@ class JSONParser:
         return repo_info
 
     def _check_dir(self, month, year) -> bool:
-        a_dir_path = (Path("../../../results") / f"{str(year)}_{str(month)}").resolve()
+        a_dir_path = (Path("results") / f"{str(year)}_{str(month)}").resolve()
         return a_dir_path.is_dir()
