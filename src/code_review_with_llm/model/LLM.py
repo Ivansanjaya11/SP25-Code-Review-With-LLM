@@ -1,4 +1,5 @@
 import ollama
+import os
 import json
 from src.code_review_with_llm.output_objects.Error import Error
 from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
@@ -6,7 +7,11 @@ from pydantic import BaseModel
 from pathlib import Path
 
 class LLM:
-    def __init__(self, model, prompt_config_path=Path("../../prompts.json"), host="http://localhost:11434"):
+    def __init__(self, model, prompt_config_path=None, host="http://localhost:11434"):
+        if prompt_config_path is None:
+            prompt_dir = os.path.dirname(os.path.abspath(__file__))
+            prompt_config_path = os.path.join(prompt_dir, "..", "..", "prompts.json")
+
         self.model = model
         self.prompt_config_path = prompt_config_path
         self.host = host
