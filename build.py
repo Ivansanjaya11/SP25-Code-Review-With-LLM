@@ -1,0 +1,24 @@
+#   -*- coding: utf-8 -*-
+from pybuilder.core import use_plugin, init, task
+import subprocess
+
+use_plugin("python.core")
+use_plugin("python.unittest")
+use_plugin("python.flake8")
+use_plugin("python.coverage")
+use_plugin("python.distutils")
+
+name = "code-review-with-llm"
+default_task = "run"
+
+@init
+def set_properties(project):
+    project.depends_on_requirements("requirements.txt")
+
+    project.set_property("dir_source_main_python", "src")
+    project.set_property("dir_source_unittest_python", "src/unittest")
+    project.set_property("dir_source_main_scripts", "src")
+
+@task
+def run(project):
+    subprocess.run(["python", "-m", "src.main"])
