@@ -96,6 +96,23 @@ class View(ctk.CTk):
         self._make_label(tab, "Pull Request ID")
         self.pr_id_entry = self._make_entry(tab, "e.g. 42")
 
+        # LLM provider option
+        self._make_label(tab, "LLM Provider")
+        self.provider_menu = ctk.CTkOptionMenu(
+            tab,
+            values=["Gemini", "Ollama"],
+            font=ctk.CTkFont(family="Segoe UI", size=13),
+            text_color=TEXT_PRIMARY,
+            fg_color=BG_DARK,
+            button_color=BORDER,
+            button_hover_color=ACCENT,
+            dropdown_fg_color=BG_DARK,
+            dropdown_text_color=TEXT_PRIMARY,
+            dropdown_hover_color=ACCENT,
+            corner_radius=8,
+        )
+        self.provider_menu.pack(anchor="w", padx=20, pady=(0, 2))
+
         # PDF checkbox
         self.pdf_review_var = ctk.BooleanVar(value=True)
         ctk.CTkCheckBox(
@@ -270,6 +287,23 @@ class View(ctk.CTk):
         self._make_label(tab, "Repository URL")
         self.analyze_url_entry = self._make_entry(tab, "https://github.com/owner/repo")
 
+        # LLM provider option
+        self._make_label(tab, "LLM Provider")
+        self.provider_menu = ctk.CTkOptionMenu(
+            tab,
+            values=["Gemini", "Ollama"],
+            font=ctk.CTkFont(family="Segoe UI", size=13),
+            text_color=TEXT_PRIMARY,
+            fg_color=BG_DARK,
+            button_color=BORDER,
+            button_hover_color=ACCENT,
+            dropdown_fg_color=BG_DARK,
+            dropdown_text_color=TEXT_PRIMARY,
+            dropdown_hover_color=ACCENT,
+            corner_radius=8,
+        )
+        self.provider_menu.pack(anchor="w", padx=20, pady=(0, 2))
+        
         # PDF checkbox
         self.pdf_analyze_var = ctk.BooleanVar(value=True)
         ctk.CTkCheckBox(
@@ -400,14 +434,14 @@ class View(ctk.CTk):
             return
 
         is_pdf = self.pdf_review_var.get()
-        ollama_model = "llama3:latest"
+        provider = self.provider_menu.get().lower()
 
         # show progress bar
         self._show_progress("review")
         self._set_status("Reviewing pull request — this may take a few minutes...")
 
         self._run_in_thread(
-            [repo_url, pr_id, ollama_model], 1, is_pdf
+            [repo_url, pr_id, provider], 1, is_pdf
         )
 
     def _handle_display_feedback(self):
