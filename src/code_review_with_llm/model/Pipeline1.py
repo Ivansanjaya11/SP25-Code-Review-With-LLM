@@ -12,12 +12,12 @@ mines Github repo, get a specific pull request, generate test cases,
 get errors and their fix suggestions, save the result
 """
 class Pipeline1(Pipeline):
-    def __init__(self, repo_url: str, pr_id_list: list[int], model: str, is_pdf: bool = True):
+    def __init__(self, repo_url: str, pr_id_list: list[int], llm: LLM, is_pdf: bool = True):
         super().__init__()
         self.pr_id_list = pr_id_list
         self.pr_miner = PullRequestMiner(repo_url)
         self.test_case_generator = TestCaseGenerator()
-        self.llm = LLM(model)
+        self.llm = llm
         self.is_pdf = is_pdf
        
     def run(self) -> list[Output]:

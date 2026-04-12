@@ -9,3 +9,5 @@ black
 reportlab
 textual
 customtkinter
+pybuilder
+google-genai

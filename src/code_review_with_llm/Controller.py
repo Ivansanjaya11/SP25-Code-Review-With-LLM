@@ -28,9 +28,9 @@ class Controller:
             case 1: # pipeline 1
                 repo_url = args[0]
                 pr_id_list = args[1]
-                ollama_model = args[2]
+                provider = args[2]
 
-                self.model.run_pipeline1(repo_url, pr_id_list, ollama_model, is_pdf)
+                self.model.run_pipeline1(repo_url, pr_id_list, provider, is_pdf)
 
             case 2: # pipeline 2
                 month1 = args[0]

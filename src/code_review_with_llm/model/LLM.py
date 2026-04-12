@@ -1,4 +1,3 @@
-import ollama
 import os
 import json
 from src.code_review_with_llm.output_objects.Error import Error
@@ -7,14 +6,13 @@ from pydantic import BaseModel
 from pathlib import Path
 
 class LLM:
-    def __init__(self, model, prompt_config_path=None, host="http://localhost:11434"):
+    def __init__(self, model, prompt_config_path=None):
         if prompt_config_path is None:
             prompt_dir = os.path.dirname(os.path.abspath(__file__))
             prompt_config_path = os.path.join(prompt_dir, "..", "..", "prompts.json")
 
         self.model = model
         self.prompt_config_path = prompt_config_path
-        self.host = host
         self.available_error_types = "OVERFLOW_ERROR, ROUND_OFF_ERROR, INFINITE_LOOP_ERROR," \
                 "MODIFY_PARAMETER_VARIABLE_ERROR, OFF_BY_ONE_ERROR, ARITHMETIC_ERROR," \
                 "BOUNDS_ERROR, UNINITIALIZED_ARRAY_ERROR, SQUELCH_EXCEPTION_ERROR," \
@@ -44,8 +42,6 @@ class LLM:
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
 
-        self.client = ollama.Client(host=self.host)
-
     def execute(self, code: str) -> FeedbackOutput:
         print(f"Requesting feedback.....")
 
@@ -63,29 +59,9 @@ class LLM:
         feedback_output = FeedbackOutput(errors)
 
         return feedback_output
-
+    
     def request_error(self, code: str) -> str:
-        """
-        use LLM to check if there are any errors in the code.
-        Will return a json-like string.
-        """
-        code = code.replace("{", "{{").replace("}", "}}")
-        formatted_prompt = self.get_error_prompt.format(
-            code = code, # the code in string format containing the changes in a specific pull request mined from the repo
-            available_error_types = self.available_error_types
-        )
-
-        get_error_response = self.client.chat(
-            model = self.model,
-            messages = [
-                {"role": "system", "content": self.system_prompt_error},
-                {"role": "user", "content": formatted_prompt}
-            ],
-            format = self.ErrorListFormat.model_json_schema()
-        )
-
-        error_response = get_error_response["message"]["content"]
-        return error_response
+        raise NotImplementedError("Subclasses must implement request_error")
 
     def parse_error_response(self, error_response: str, code: str) -> list[Error]:
         """
@@ -113,39 +89,7 @@ class LLM:
         return errors
     
     def request_suggestion(self, error: Error) -> Error:
-        """
-        use LLM to give suggestions to all the errors.
-        Will return an Error object.
-        """
-        error_type = error.get_error_type()
-        severity = error.get_error_severity_level()
-        error_description = error.get_error_description()
-        code = error.get_code()
-        code = code.replace("{", "{{").replace("}", "}}")
-
-        formatted_prompt = self.suggestion_prompt.format(
-            error_type = error_type,
-            severity = severity,
-            error_description = error_description,
-            code = code
-        )
-
-        suggestion_response = self.client.chat(
-            model = self.model,
-            messages = [
-                {"role": "system", "content": self.system_prompt_suggestion},
-                {"role": "user", "content": formatted_prompt}
-            ],
-            format = self.SuggestionListFormat.model_json_schema()
-        )
-
-        suggestion_response = suggestion_response["message"]["content"]
-
-        suggestion_response_parsed = json.loads(suggestion_response)['suggestions'][0]['suggestion']
-
-        error.set_fix_suggestion(suggestion_response_parsed)
-
-        return error
+        raise NotImplementedError("Subclasses must implement request_suggestion")
 
     def get_all_fix_suggestions(self, errors: list[Error]) -> list[Error]:
         """
