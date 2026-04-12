@@ -1,6 +1,8 @@
 from src.code_review_with_llm.model.Pipeline1 import Pipeline1
 from src.code_review_with_llm.model.Pipeline2 import Pipeline2
 from src.code_review_with_llm.output_objects.Output import Output
+from src.code_review_with_llm.model.GeminiLLM import GeminiLLM
+from src.code_review_with_llm.model.OllamaLLM import OllamaLLM
 
 """
 Model class based on the MVC architecture.
@@ -9,8 +11,13 @@ class Model:
     def __init__(self, controller: "Controller"):
         self.controller = controller
 
-    def run_pipeline1(self, repo_url: str, pr_id_list: list[int], model: str, is_pdf: bool = True) -> None:
-        pipeline1 = Pipeline1(repo_url, pr_id_list, model, is_pdf)
+    def run_pipeline1(self, repo_url: str, pr_id_list: list[int], provider: str = "gemini", is_pdf: bool = True) -> None:
+        if provider == "gemini":
+            llm = GeminiLLM()
+        else:
+            llm = OllamaLLM()
+
+        pipeline1 = Pipeline1(repo_url, pr_id_list, llm, is_pdf)
         output_list = pipeline1.run()
         self.send_to_controller_1(output_list)
 
