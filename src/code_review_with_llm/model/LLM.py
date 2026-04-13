@@ -29,11 +29,17 @@ class LLM:
                 self.system_prompt_suggestion = prompts['system_prompt_suggestion']
                 print(f"System prompt suggestion fetched: {self.system_prompt_suggestion}")
 
+                self.system_prompt_repo = prompts['system_prompt_repo']
+                print(f"System prompt repo fetched: {self.system_prompt_repo}")
+
                 self.get_error_prompt = prompts['get_error_prompt']
                 print(f"Get error prompt fetched: {self.get_error_prompt}")
 
                 self.suggestion_prompt = prompts['suggestion_prompt']
                 print(f"Suggestion prompt fetched: {self.suggestion_prompt}")
+
+                self.get_repo_analysis_prompt = prompts['get_repo_analysis_prompt']
+                print(f"Get repo analysis prompt fetched:{self.get_repo_analysis_prompt}")
 
                 print(f"\n'{prompt_config_path}' successfully loaded!")
                 
@@ -41,6 +47,9 @@ class LLM:
             print(f"Error: The file '{prompt_config_path}' was not found.")
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
+
+    def request_repo_analysis(self, changes):
+        pass
 
     def execute(self, code: str) -> FeedbackOutput:
         print(f"Requesting feedback.....")
@@ -59,7 +68,7 @@ class LLM:
         feedback_output = FeedbackOutput(errors)
 
         return feedback_output
-    
+
     def request_error(self, code: str) -> str:
         raise NotImplementedError("Subclasses must implement request_error")
 
@@ -100,6 +109,9 @@ class LLM:
             errors[idx] = self.request_suggestion(error)
 
         return errors
+
+    class RepoAnalysisFormat(BaseModel):
+        analysis: str
 
     # json schema (format) for a list of get error LLM outputs 
     class ErrorListFormat(BaseModel):

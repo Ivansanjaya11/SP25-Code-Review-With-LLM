@@ -8,6 +8,42 @@ class OllamaLLM(LLM):
         super().__init__(model=model)
         self.client = ollama.Client(host=host)
 
+    def request_repo_analysis(self, changes):
+        formatted_prompt = self.get_repo_analysis_prompt.format(
+            changes = changes
+        )
+
+        print(formatted_prompt[:1000])
+
+        print(self.system_prompt_repo)
+
+        print(f"Requesting repo analysis.....")
+
+        get_repo_analysis_response = self.client.chat(
+            model = self.model,
+            messages=[
+                {"role": "system", "content": self.system_prompt_repo},
+                {"role": "user", "content": formatted_prompt}
+            ],
+            format=self.RepoAnalysisFormat.model_json_schema()
+        )
+
+        print("response received!")
+
+        repo_analysis_response = get_repo_analysis_response["message"]["content"]
+
+        repo_analysis_json = json.loads(repo_analysis_response)
+
+        print(repo_analysis_json)
+
+        print(f"response parsed!")
+
+        repo_analysis = repo_analysis_json["analysis"]
+
+        print(f"Repo analysis generated \n {repo_analysis}")
+
+        return repo_analysis
+
     def request_error(self, code: str) -> str:
         """
         use LLM to check if there are any errors in the code.

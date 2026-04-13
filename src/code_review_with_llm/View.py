@@ -465,7 +465,21 @@ class View(ctk.CTk):
         )
 
     def _handle_repo_history(self):
-        pass
+        repo_url = self.analyze_url_entry.get().strip()
+
+        if not repo_url:
+            self._set_status("Please enter a repository URL.", error=True)
+            return
+
+        is_pdf = self.pdf_analyze_var.get()
+        provider = self.provider_menu.get().lower()
+
+        self._show_progress("analyze")
+        self._set_status("Analyzing repository history...")
+
+        self._run_in_thread(
+            [repo_url, provider], 3, is_pdf
+        )
 
     # ─────────────────────────────────────────────────────────
     #  Execute pipeline (threaded so UI doesn't freeze)
@@ -476,10 +490,16 @@ class View(ctk.CTk):
                 self.controller.run(args, pipeline_type, is_pdf)
                 self.after(0, lambda: self._set_status("Done!", success=True))
             except Exception as e:
-                self.after(0, lambda: self._hide_progress(
-                    "review" if pipeline_type == 1 else "feedback"
-                ))
-                self.after(0, lambda: self._set_status(f"Error: {e}", error=True))
+                tab = (
+                    "review" if pipeline_type == 1 else
+                    "feedback" if pipeline_type == 2 else
+                    "analyze"
+                )
+
+                self.after(0, lambda t=tab: self._hide_progress(t))
+                self.after(0, lambda err=e: self._set_status(f"Error: {err}", error=True))
+                #self.after(0, lambda: self._hide_progress(tab))
+                #self.after(0, lambda: self._set_status(f"Error: {e}", error=True))
 
         thread = threading.Thread(target=task, daemon=True)
         thread.start()
@@ -491,17 +511,23 @@ class View(ctk.CTk):
         if tab_name == "review":
             self.review_progress.pack(fill="x", padx=20, pady=(8, 0))
             self.review_progress.start()
-        else:
+        elif tab_name == "feedback":
             self.feedback_progress.pack(fill="x", padx=20, pady=(8, 0))
             self.feedback_progress.start()
+        else:
+            self.analyze_progress.pack(fill="x", padx=20, pady=(8, 0))
+            self.analyze_progress.start()
 
     def _hide_progress(self, tab_name):
         if tab_name == "review":
             self.review_progress.stop()
             self.review_progress.pack_forget()
-        else:
+        elif tab_name == "feedback":
             self.feedback_progress.stop()
             self.feedback_progress.pack_forget()
+        else:
+            self.analyze_progress.stop()
+            self.analyze_progress.pack_forget()
 
     # ─────────────────────────────────────────────────────────
     #  Display results in scrollable area
@@ -565,6 +591,34 @@ class View(ctk.CTk):
             # display each error in a card
             for error in errors:
                 self._make_error_card(results_frame, error)
+
+    def _display_results_3(self, analysis: str):
+        results_frame = self.analyze_results
+        message_label = self.analyze_message
+        separator = self.analyze_separator
+
+        # hide progress bar
+        self._hide_progress("analyze")
+
+        # clear previous results
+        for widget in results_frame.winfo_children():
+            widget.destroy()
+
+        # show UI elements
+        message_label.pack(fill="x", padx=20, pady=(6, 0))
+        separator.pack(fill="x", padx=20, pady=(10, 0))
+        results_frame.pack(fill="both", expand=True, padx=20, pady=(10, 10))
+
+        # display the string
+        ctk.CTkLabel(
+            results_frame,
+            text=analysis,
+            font=ctk.CTkFont(family="Segoe UI", size=12),
+            text_color=TEXT_PRIMARY,
+            justify="left",
+            wraplength=650,
+            anchor="w",
+        ).pack(fill="x", padx=10, pady=10)
 
     def _make_error_card(self, parent, error):
         """Creates a styled card for a single error."""
@@ -668,6 +722,9 @@ class View(ctk.CTk):
                 flat_list.append(group)
         self.after(0, lambda: self._on_feedback_complete(flat_list))
 
+    def receive_output_3(self, analysis: str):
+        self.after(0, lambda: self._on_repo_analysis_complete(analysis))
+
     def _on_review_complete(self, output_list):
         # show PDF path message if applicable
         if self.pdf_review_var.get() and output_list:
@@ -697,4 +754,13 @@ class View(ctk.CTk):
             )
 
         self._display_results(output_list, "feedback")
+        self._set_status("Done!", success=True)
+
+    def _on_repo_analysis_complete(self, analysis: str):
+        self.analyze_message.configure(
+            text="Analysis complete.",
+            text_color=SUCCESS,
+        )
+
+        self._display_results_3(analysis)
         self._set_status("Done!", success=True)

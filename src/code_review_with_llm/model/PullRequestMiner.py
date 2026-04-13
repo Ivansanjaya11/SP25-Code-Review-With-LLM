@@ -64,7 +64,5 @@ class PullRequestMiner:
                 print(f"Error retrieving the pull request for {self.repo_url}: {e}")
                 continue
 
-            
-
     def get_pull_request_info_list(self) -> list[PullRequestInfo]:
         return self.pr_list

@@ -1,11 +1,12 @@
 class RepositoryInfo:
     '''
     Object that holds the details of a repository to be used by PullRequestInfo'''
-    def __init__(self, repo_name: str, repo_url: str,
+    def __init__(self, repo_name: str, repo_url: str, repo_owner: str,
                  branches_names: list[str] = [], commit_id_list: list[str] = None,
                  changes: list[str] = None):
         self.repo_name = repo_name
         self.repo_url = repo_url
+        self.repo_owner = repo_owner
         self.branches_names = branches_names
         self.repo_details = ""
         self.commit_id_list = commit_id_list
@@ -16,6 +17,9 @@ class RepositoryInfo:
     
     def get_repo_name(self) -> str:
         return self.repo_name
+
+    def get_repo_owner(self) -> str:
+        return self.repo_owner
     
     def get_branches_names(self) -> list[str]:
         return self.branches_names

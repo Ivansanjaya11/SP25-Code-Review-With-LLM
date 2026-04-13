@@ -1,5 +1,6 @@
 from src.code_review_with_llm.model.Pipeline1 import Pipeline1
 from src.code_review_with_llm.model.Pipeline2 import Pipeline2
+from src.code_review_with_llm.model.Pipeline3 import Pipeline3
 from src.code_review_with_llm.output_objects.Output import Output
 from src.code_review_with_llm.model.GeminiLLM import GeminiLLM
 from src.code_review_with_llm.model.OllamaLLM import OllamaLLM
@@ -26,8 +27,23 @@ class Model:
         outputs_list = pipeline2.run()
         self.send_to_controller_2(outputs_list)
 
+    def run_pipeline3(self, repo_url: str, provider: str = "gemini") -> None:
+        if provider == "gemini":
+            llm = GeminiLLM()
+        else:
+            llm = OllamaLLM()
+
+        pipeline3 = Pipeline3(repo_url, llm)
+
+        analysis: str = pipeline3.run()
+
+        self.send_to_controller_3(analysis)
+
     def send_to_controller_1(self, output_list: list[Output]) -> None:
         self.controller.send_to_view1(output_list)
 
     def send_to_controller_2(self, output_list: list[list[Output]]) -> None:
         self.controller.send_to_view2(output_list)
+
+    def send_to_controller_3(self, analysis: str) -> None:
+        self.controller.send_to_view3(analysis)

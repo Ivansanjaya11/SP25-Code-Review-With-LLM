@@ -23,6 +23,9 @@ class Controller:
     def send_to_view2(self, output_list: list[list[Output]]):
         self.view.receive_output_2(output_list)
 
+    def send_to_view3(self, analysis: str):
+        self.view.receive_output_3(analysis)
+
     def run(self, args: list[Any], pipeline_type: int = 1, is_pdf: bool = True) -> None:
         match pipeline_type:
             case 1: # pipeline 1
@@ -39,6 +42,11 @@ class Controller:
                 year2 = args[3]
 
                 self.model.run_pipeline2(month1, month2, year1, year2, is_pdf)
+
+            case 3: # pipeline 3
+                repo_url = args[0]
+                provider = args[1]
+                self.model.run_pipeline3(repo_url, provider)
 
             case _:
                 print("Unknown pipeline!")

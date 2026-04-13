@@ -1,14 +1,16 @@
 from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
 from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
+from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
 from src.code_review_with_llm.output_objects.TestCase import TestCase
 
 class Output:
     def __init__(self, pr_info: PullRequestInfo = None,
                  test_cases: list[TestCase] = None,
-                 feedback_output: FeedbackOutput = None):
+                 feedback_output: FeedbackOutput = None, repo_info: RepositoryInfo = None):
         self.pr_info = pr_info
         self.test_cases = test_cases
         self.feedback_output = feedback_output
+        self.repo_info = repo_info
 
     def get_pr_info(self) -> PullRequestInfo:
         return self.pr_info

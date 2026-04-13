@@ -13,7 +13,7 @@ class RepoMiner:
         self.repository = Repository(repo_url)
         self.repo_name = repo_url.split("/")[-1]
         self.repo_owner = repo_url.split("/")[-2]
-        self.repository_info = RepositoryInfo(self.repo_name, repo_url)
+        self.repository_info = RepositoryInfo(self.repo_name, repo_url, self.repo_owner)
         self.pr_list = []
         self.g = self.set_up_github_api()
 
@@ -37,21 +37,31 @@ class RepoMiner:
         full_repo_name = f"{self.repo_owner}/{self.repo_name}"
         repo = self.g.get_repo(full_repo_name)
 
+        print(f"Repository fetched!")
+
         repo_description = repo.description
         repo_branches_names = [branch.name for branch in repo.get_branches()]
         commit_id_list = []
+        changes = ""
 
         for _, commit in enumerate(self.repository.traverse_commits()):
-            changes = ""
+            changes += f"COMMIT {commit.hash}\n"
+            changes += "_"*50
             for file in commit.modified_files:
+                filename = file.filename
+                changes += f"filename: {filename}\n"
+                changes += "="*50
                 for _, line in file.diff_parsed["added"]:
                     changes += line + "\n"
 
             commit_id_list.append(commit.hash)
 
+        self.repository_info.set_changes(changes)
         self.repository_info.set_commit_id_list(commit_id_list)
         self.repository_info.set_repo_description(repo_description)
         self.repository_info.set_branches_names(repo_branches_names)
+
+        print(f"Repository info generated!")
 
     def get_repository_info(self) -> RepositoryInfo:
         return self.repository_info

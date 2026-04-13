@@ -11,6 +11,26 @@ class GeminiLLM(LLM):
         load_dotenv()
         self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
+    def request_repo_analysis(self, changes):
+        formatted_prompt = self.get_repo_analysis_prompt.format(
+            changes = changes
+        )
+
+        repo_analysis_response = self.client.models.generate_content(
+            model=self.model,
+            config=genai.types.GenerateContentConfig(
+                system_instruction=self.system_prompt_repo,
+                response_mime_type="application/json",
+                response_schema=self.RepoAnalysisFormat,
+            ),
+            contents=formatted_prompt,
+        )
+
+        repo_analysis = repo_analysis_response.text
+
+        return repo_analysis
+
+
     def request_error(self, code: str) -> str:
         """
         use LLM to check if there are any errors in the code.
