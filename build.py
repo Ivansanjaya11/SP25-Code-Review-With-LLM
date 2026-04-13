@@ -1,6 +1,7 @@
 #   -*- coding: utf-8 -*-
 from pybuilder.core import use_plugin, init, task
 import subprocess
+import sys
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -21,4 +22,4 @@ def set_properties(project):
 
 @task
 def run(project):
-    subprocess.run(["python", "-m", "src.main"])
+    subprocess.run([sys.executable, "-m", "src.main"])
