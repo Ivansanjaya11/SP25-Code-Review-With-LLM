@@ -1,6 +1,8 @@
 import customtkinter as ctk
 import threading
 
+from src.code_review_with_llm.output_objects.Analysis import Analysis
+
 """
 View class based on the MVC architecture.
 CustomTkinter GUI replacement for Textual terminal UI.
@@ -592,7 +594,7 @@ class View(ctk.CTk):
             for error in errors:
                 self._make_error_card(results_frame, error)
 
-    def _display_results_3(self, analysis: str):
+    def _display_results_3(self, analysis_list: list[Analysis]):
         results_frame = self.analyze_results
         message_label = self.analyze_message
         separator = self.analyze_separator
@@ -609,16 +611,77 @@ class View(ctk.CTk):
         separator.pack(fill="x", padx=20, pady=(10, 0))
         results_frame.pack(fill="both", expand=True, padx=20, pady=(10, 10))
 
-        # display the string
-        ctk.CTkLabel(
-            results_frame,
-            text=analysis,
-            font=ctk.CTkFont(family="Segoe UI", size=12),
-            text_color=TEXT_PRIMARY,
-            justify="left",
-            wraplength=650,
-            anchor="w",
-        ).pack(fill="x", padx=10, pady=10)
+        # build results
+        for analysis_obj in analysis_list:
+            commit_id = analysis_obj.get_commit_id()
+            filename = analysis_obj.get_filename()
+            changes = analysis_obj.get_changes()
+            analysis_text = analysis_obj.get_analysis()
+
+            # Header (similar to PR header style)
+            ctk.CTkLabel(
+                results_frame,
+                text=f"Commit {commit_id}",
+                font=ctk.CTkFont(family="Segoe UI", size=15, weight="bold"),
+                text_color=ACCENT,
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(12, 2))
+
+            # Filename / context line
+            ctk.CTkLabel(
+                results_frame,
+                text=f"File: {filename}",
+                font=ctk.CTkFont(family="Segoe UI", size=12),
+                text_color=TEXT_DIM,
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(0, 6))
+
+            # Changes section
+            ctk.CTkLabel(
+                results_frame,
+                text="Changes:",
+                font=ctk.CTkFont(family="Segoe UI", size=12, weight="bold"),
+                text_color=TEXT_PRIMARY,
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(4, 0))
+
+            ctk.CTkLabel(
+                results_frame,
+                text=changes if changes else "No changes provided.",
+                font=ctk.CTkFont(family="Consolas", size=11),
+                text_color=TEXT_DIM,
+                justify="left",
+                wraplength=650,
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(2, 8))
+
+            # Analysis section (like error card content)
+            ctk.CTkLabel(
+                results_frame,
+                text="Analysis:",
+                font=ctk.CTkFont(family="Segoe UI", size=12, weight="bold"),
+                text_color=TEXT_PRIMARY,
+                anchor="w",
+            ).pack(fill="x", padx=10, pady=(4, 0))
+
+            if analysis_text:
+                ctk.CTkLabel(
+                    results_frame,
+                    text=analysis_text,
+                    font=ctk.CTkFont(family="Segoe UI", size=12),
+                    text_color=TEXT_PRIMARY,
+                    justify="left",
+                    wraplength=650,
+                    anchor="w",
+                ).pack(fill="x", padx=10, pady=(2, 10))
+            else:
+                ctk.CTkLabel(
+                    results_frame,
+                    text="No analysis available.",
+                    font=ctk.CTkFont(family="Segoe UI", size=12),
+                    text_color=SUCCESS,
+                    anchor="w",
+                ).pack(fill="x", padx=10, pady=(2, 10))
 
     def _make_error_card(self, parent, error):
         """Creates a styled card for a single error."""
@@ -722,8 +785,8 @@ class View(ctk.CTk):
                 flat_list.append(group)
         self.after(0, lambda: self._on_feedback_complete(flat_list))
 
-    def receive_output_3(self, analysis: str):
-        self.after(0, lambda: self._on_repo_analysis_complete(analysis))
+    def receive_output_3(self, analysis_list: list[Analysis]):
+        self.after(0, lambda: self._on_repo_analysis_complete(analysis_list))
 
     def _on_review_complete(self, output_list):
         # show PDF path message if applicable
@@ -756,11 +819,11 @@ class View(ctk.CTk):
         self._display_results(output_list, "feedback")
         self._set_status("Done!", success=True)
 
-    def _on_repo_analysis_complete(self, analysis: str):
+    def _on_repo_analysis_complete(self, analysis_list: list[Analysis]):
         self.analyze_message.configure(
             text="Analysis complete.",
             text_color=SUCCESS,
         )
 
-        self._display_results_3(analysis)
+        self._display_results_3(analysis_list)
         self._set_status("Done!", success=True)

@@ -1,5 +1,6 @@
 from pydriller import Repository
 from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
+from src.code_review_with_llm.output_objects.Analysis import Analysis
 from github import Github, Auth
 from dotenv import load_dotenv
 import os
@@ -42,21 +43,20 @@ class RepoMiner:
         repo_description = repo.description
         repo_branches_names = [branch.name for branch in repo.get_branches()]
         commit_id_list = []
-        changes = ""
+        analysis_list = []
 
         for _, commit in enumerate(self.repository.traverse_commits()):
-            changes += f"COMMIT {commit.hash}\n"
-            changes += "_"*50
+            commit_id = commit.hash
             for file in commit.modified_files:
                 filename = file.filename
-                changes += f"filename: {filename}\n"
-                changes += "="*50
+                changes = ""
                 for _, line in file.diff_parsed["added"]:
                     changes += line + "\n"
 
+                analysis_list.append(Analysis(commit_id, filename, changes))
             commit_id_list.append(commit.hash)
 
-        self.repository_info.set_changes(changes)
+        self.repository_info.set_analysis_list(analysis_list)
         self.repository_info.set_commit_id_list(commit_id_list)
         self.repository_info.set_repo_description(repo_description)
         self.repository_info.set_branches_names(repo_branches_names)

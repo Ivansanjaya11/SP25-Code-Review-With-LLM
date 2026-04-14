@@ -1,6 +1,8 @@
 from src.code_review_with_llm.Model import Model
 from src.code_review_with_llm.View import View
 from typing import Any
+
+from src.code_review_with_llm.output_objects.Analysis import Analysis
 from src.code_review_with_llm.output_objects.Output import Output
 
 """
@@ -23,8 +25,8 @@ class Controller:
     def send_to_view2(self, output_list: list[list[Output]]):
         self.view.receive_output_2(output_list)
 
-    def send_to_view3(self, analysis: str):
-        self.view.receive_output_3(analysis)
+    def send_to_view3(self, analysis_list: list[Analysis]):
+        self.view.receive_output_3(analysis_list)
 
     def run(self, args: list[Any], pipeline_type: int = 1, is_pdf: bool = True) -> None:
         match pipeline_type:

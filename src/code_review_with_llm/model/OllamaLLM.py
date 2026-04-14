@@ -13,12 +13,6 @@ class OllamaLLM(LLM):
             changes = changes
         )
 
-        print(formatted_prompt[:1000])
-
-        print(self.system_prompt_repo)
-
-        print(f"Requesting repo analysis.....")
-
         get_repo_analysis_response = self.client.chat(
             model = self.model,
             messages=[
@@ -28,19 +22,11 @@ class OllamaLLM(LLM):
             format=self.RepoAnalysisFormat.model_json_schema()
         )
 
-        print("response received!")
-
         repo_analysis_response = get_repo_analysis_response["message"]["content"]
 
         repo_analysis_json = json.loads(repo_analysis_response)
 
-        print(repo_analysis_json)
-
-        print(f"response parsed!")
-
         repo_analysis = repo_analysis_json["analysis"]
-
-        print(f"Repo analysis generated \n {repo_analysis}")
 
         return repo_analysis
 
