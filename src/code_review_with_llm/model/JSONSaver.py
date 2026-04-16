@@ -49,7 +49,7 @@ class JSONSaver:
                 "repo_url": pr_info.get_repo_info().get_repo_url(),
                 "repo_branches": pr_info.get_repo_info().get_branches_names(),
                 "repo_commit_id_list": pr_info.get_repo_info().get_commit_id_list(),
-                "repo_changes": pr_info.get_repo_info().get_changes()
+                "repo_changes": None
             },
             "test_cases": [
                 {
