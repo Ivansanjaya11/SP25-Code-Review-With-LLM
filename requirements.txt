@@ -7,7 +7,7 @@ python-dotenv
 hypothesis
 black
 reportlab
-textual
 customtkinter
 pybuilder
 google-genai
+tqdm
