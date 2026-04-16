@@ -16,7 +16,7 @@ class LLM:
         self.available_error_types = "OVERFLOW_ERROR, ROUND_OFF_ERROR, INFINITE_LOOP_ERROR," \
                 "MODIFY_PARAMETER_VARIABLE_ERROR, OFF_BY_ONE_ERROR, ARITHMETIC_ERROR," \
                 "BOUNDS_ERROR, UNINITIALIZED_ARRAY_ERROR, SQUELCH_EXCEPTION_ERROR," \
-                "MAGIC_NUMBER_ERROR, DANGLING_ELSE_ERROR, OTHERS"
+                "MAGIC_NUMBER_ERROR, DANGLING_ELSE_ERROR"
         
         # get the prompts from the json file
         try:
