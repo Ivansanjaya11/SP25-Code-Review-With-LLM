@@ -636,25 +636,6 @@ class View(ctk.CTk):
                 anchor="w",
             ).pack(fill="x", padx=10, pady=(0, 6))
 
-            # Changes section
-            ctk.CTkLabel(
-                results_frame,
-                text="Changes:",
-                font=ctk.CTkFont(family="Segoe UI", size=12, weight="bold"),
-                text_color=TEXT_PRIMARY,
-                anchor="w",
-            ).pack(fill="x", padx=10, pady=(4, 0))
-
-            ctk.CTkLabel(
-                results_frame,
-                text=changes if changes else "No changes provided.",
-                font=ctk.CTkFont(family="Consolas", size=11),
-                text_color=TEXT_DIM,
-                justify="left",
-                wraplength=650,
-                anchor="w",
-            ).pack(fill="x", padx=10, pady=(2, 8))
-
             # Analysis section (like error card content)
             ctk.CTkLabel(
                 results_frame,
