@@ -12,7 +12,6 @@ class PullRequestMiner:
     '''
 
     def __init__(self, repo_url: str):
-        self.repository = Repository(repo_url)
         self.repo_name = repo_url.split("/")[-1]
         self.repo_owner = repo_url.split("/")[-2]
         self.repo_url = repo_url
