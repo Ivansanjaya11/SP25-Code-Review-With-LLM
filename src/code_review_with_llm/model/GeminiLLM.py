@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import json
 from src.code_review_with_llm.output_objects.Error import Error
+import time
 
 class GeminiLLM(LLM):
     def __init__(self):
@@ -16,19 +17,28 @@ class GeminiLLM(LLM):
             changes = changes
         )
 
-        repo_analysis_response = self.client.models.generate_content(
-            model=self.model,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=self.system_prompt_repo,
-                response_mime_type="application/json",
-                response_schema=self.RepoAnalysisFormat,
-            ),
-            contents=formatted_prompt,
-        )
+        for attempt in range(3):
+            try:
+                repo_analysis_response = self.client.models.generate_content(
+                    model=self.model,
+                    config=genai.types.GenerateContentConfig(
+                        system_instruction=self.system_prompt_repo,
+                        response_mime_type="application/json",
+                        response_schema=self.RepoAnalysisFormat,
+                    ),
+                    contents=formatted_prompt,
+                )
 
-        repo_analysis = repo_analysis_response.text
-
-        return repo_analysis
+                repo_analysis = repo_analysis_response.text
+                return repo_analysis
+            except Exception as e:
+                if "503" in str(e) or "429" in str(e):
+                    print(f"API error, retrying in 15 seconds... ({attempt + 1}/3)")
+                    time.sleep(15)
+                else:
+                    raise e
+    
+        raise Exception("Gemini API failed after 3 retries")
 
 
     def request_error(self, code: str) -> str:
@@ -42,18 +52,29 @@ class GeminiLLM(LLM):
             available_error_types = self.available_error_types
         )
 
-        get_error_response = self.client.models.generate_content(
-            model=self.model,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=self.system_prompt_error,
-                response_mime_type="application/json",
-                response_schema=self.ErrorListFormat,
-            ),
-            contents=formatted_prompt,
-        )
+        for attempt in range(3):
+            try:
+                get_error_response = self.client.models.generate_content(
+                    model=self.model,
+                    config=genai.types.GenerateContentConfig(
+                        system_instruction=self.system_prompt_error,
+                        response_mime_type="application/json",
+                        response_schema=self.ErrorListFormat,
+                    ),
+                    contents=formatted_prompt,
+                )
 
-        error_response = get_error_response.text
-        return error_response
+                error_response = get_error_response.text
+                return error_response
+            
+            except Exception as e:
+                if "503" in str(e) or "429" in str(e):
+                    print(f"API error, retrying in 15 seconds... ({attempt + 1}/3)")
+                    time.sleep(15)
+                else:
+                    raise e
+                
+        raise Exception("Gemini API failed after 3 tries")
 
     def request_suggestion(self, error: Error) -> Error:
         """
@@ -73,18 +94,28 @@ class GeminiLLM(LLM):
             code = code
         )
 
-        suggestion_response = self.client.models.generate_content(
-            model=self.model,
-            config=genai.types.GenerateContentConfig(
-                system_instruction=self.system_prompt_suggestion,
-                response_mime_type="application/json",
-                response_schema=self.SuggestionListFormat,
-            ),
-            contents=formatted_prompt,
-        )
+        for attempt in range(3):
+            try:
+                suggestion_response = self.client.models.generate_content(
+                    model=self.model,
+                    config=genai.types.GenerateContentConfig(
+                        system_instruction=self.system_prompt_suggestion,
+                        response_mime_type="application/json",
+                        response_schema=self.SuggestionListFormat,
+                    ),
+                    contents=formatted_prompt,
+                )
 
-        suggestion_response = suggestion_response.text  
-        suggestion_response_parsed = json.loads(suggestion_response)['suggestions'][0]['suggestion']
-        error.set_fix_suggestion(suggestion_response_parsed)
+                suggestion_response = suggestion_response.text  
+                suggestion_response_parsed = json.loads(suggestion_response)['suggestions'][0]['suggestion']
+                error.set_fix_suggestion(suggestion_response_parsed)
 
-        return error
+                return error
+            except Exception as e:
+                if "503" in str(e) or "429" in str(e):
+                    print(f"API error, retrying in 15 seconds... ({attempt + 1}/3)")
+                    time.sleep(15)
+                else:
+                    raise e
+                
+        raise Exception("Gemini API failed after 3 tries")

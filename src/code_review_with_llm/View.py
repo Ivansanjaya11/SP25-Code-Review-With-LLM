@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import threading
-
+import json
 from src.code_review_with_llm.output_objects.Analysis import Analysis
 
 """
@@ -305,20 +305,6 @@ class View(ctk.CTk):
             corner_radius=8,
         )
         self.provider_menu.pack(anchor="w", padx=20, pady=(0, 2))
-        
-        # PDF checkbox
-        self.pdf_analyze_var = ctk.BooleanVar(value=True)
-        ctk.CTkCheckBox(
-            tab,
-            text="Generate PDF report",
-            variable=self.pdf_analyze_var,
-            font=ctk.CTkFont(family="Segoe UI", size=13),
-            text_color=TEXT_PRIMARY,
-            fg_color=ACCENT,
-            hover_color=ACCENT_HOVER,
-            border_color=BORDER,
-            corner_radius=6,
-        ).pack(anchor="w", padx=20, pady=(14, 0))
 
         # Submit button
         ctk.CTkButton(
@@ -473,7 +459,7 @@ class View(ctk.CTk):
             self._set_status("Please enter a repository URL.", error=True)
             return
 
-        is_pdf = self.pdf_analyze_var.get()
+        is_pdf = False
         provider = self.provider_menu.get().lower()
 
         self._show_progress("analyze")
@@ -615,54 +601,18 @@ class View(ctk.CTk):
         for analysis_obj in analysis_list:
             commit_id = analysis_obj.get_commit_id()
             filename = analysis_obj.get_filename()
-            changes = analysis_obj.get_changes()
             analysis_text = analysis_obj.get_analysis()
 
-            # Header (similar to PR header style)
-            ctk.CTkLabel(
-                results_frame,
-                text=f"Commit {commit_id}",
-                font=ctk.CTkFont(family="Segoe UI", size=15, weight="bold"),
-                text_color=ACCENT,
-                anchor="w",
-            ).pack(fill="x", padx=10, pady=(12, 2))
-
-            # Filename / context line
-            ctk.CTkLabel(
-                results_frame,
-                text=f"File: {filename}",
-                font=ctk.CTkFont(family="Segoe UI", size=12),
-                text_color=TEXT_DIM,
-                anchor="w",
-            ).pack(fill="x", padx=10, pady=(0, 6))
-
-            # Analysis section (like error card content)
-            ctk.CTkLabel(
-                results_frame,
-                text="Analysis:",
-                font=ctk.CTkFont(family="Segoe UI", size=12, weight="bold"),
-                text_color=TEXT_PRIMARY,
-                anchor="w",
-            ).pack(fill="x", padx=10, pady=(4, 0))
-
             if analysis_text:
-                ctk.CTkLabel(
-                    results_frame,
-                    text=analysis_text,
-                    font=ctk.CTkFont(family="Segoe UI", size=12),
-                    text_color=TEXT_PRIMARY,
-                    justify="left",
-                    wraplength=650,
-                    anchor="w",
-                ).pack(fill="x", padx=10, pady=(2, 10))
+                try:
+                    parsed = json.loads(analysis_text)
+                    display_text = parsed.get("analysis", analysis_text)
+                except (json.JSONDecodeError, TypeError):
+                    display_text = analysis_text
             else:
-                ctk.CTkLabel(
-                    results_frame,
-                    text="No analysis available.",
-                    font=ctk.CTkFont(family="Segoe UI", size=12),
-                    text_color=SUCCESS,
-                    anchor="w",
-                ).pack(fill="x", padx=10, pady=(2, 10))
+                display_text = "No analysis available."
+
+            self._make_analysis_card(results_frame, commit_id, filename, display_text)
 
     def _make_error_card(self, parent, error):
         """Creates a styled card for a single error."""
@@ -728,6 +678,46 @@ class View(ctk.CTk):
                 justify="left",
                 wraplength=600,
             ).pack(fill="x", padx=12, pady=(0, 10))
+
+    def _make_analysis_card(self, parent, commit_id, filename, analysis_text):
+        """Creates a styled card for a single error."""
+        card = ctk.CTkFrame(
+            parent,
+            fg_color=BG_CARD,
+            border_width=1,
+            border_color=BORDER,
+            corner_radius=8,
+        )
+        card.pack(fill="x", padx=10, pady=(0, 8))
+
+        header = ctk.CTkFrame(card, fg_color="transparent")
+        header.pack(fill="x", padx=12, pady=(10, 4))
+
+        ctk.CTkLabel(
+            header,
+            text=commit_id,
+            font=ctk.CTkFont(family="Segoe UI", size=13, weight="bold"),
+            text_color=TEXT_PRIMARY,
+        ).pack(side="left")
+
+        ctk.CTkLabel(
+            card,
+            text=f"File: {filename}",
+            font=ctk.CTkFont(family="Segoe UI", size=11),
+            text_color=TEXT_DIM,
+            anchor="w",
+        ).pack(fill="x", padx=12, pady=(0, 4))
+
+        # description
+        ctk.CTkLabel(
+            card,
+            text=analysis_text,
+            font=ctk.CTkFont(family="Segoe UI", size=12),
+            text_color=TEXT_PRIMARY,
+            anchor="w",
+            justify="left",
+            wraplength=600,
+        ).pack(fill="x", padx=12, pady=(0, 6))
 
     def _get_severity_color(self, severity):
         severity = severity.lower()
