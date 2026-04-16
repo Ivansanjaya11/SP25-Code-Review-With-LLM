@@ -1,4 +1,3 @@
-from pydriller import Repository
 from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
 from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
 from github import Github, Auth
@@ -42,16 +41,18 @@ class PullRequestMiner:
         for pr_id in pr_id_list:
             try:
                 pr = repo.get_pull(pr_id)
-                commit_list = pr.get_commits()
+                commit_list = list(pr.get_commits())
                 commit_id_list = [commit.sha for commit in commit_list]
 
                 changes = ""
+                last_commit = commit_list[-1]
 
-                for commit in pr.get_commits():
-                    for file in commit.files:
-                        for line in file.patch.splitlines():
-                            if line.startswith('+') and not line.startswith('+++'):
-                                changes += line[1:] + "\n"
+                for file in pr.get_files():
+                    try:
+                        file_content = repo.get_contents(file.filename, ref=last_commit.sha)
+                        changes += file_content.decoded_content.decode("utf-8") + "\n"
+                    except Exception as e:
+                        print(f"Could not fetch {file.filename}: {e}")
 
                 pr_title = pr.title
                 pr_description = pr.body
