@@ -1,0 +1,29 @@
+name: Project Github Actions
+run-name: ${{ github.actor }} just pushed code to the repository!
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      #- name: Style check with Ruff
+      #  run:
+
+      #- name: Run tests
+      #  run: pyb test
+
+      - name: Run the code
+        run: pyb
