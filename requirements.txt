@@ -11,3 +11,4 @@ customtkinter
 pybuilder
 google-genai
 tqdm
+ruff

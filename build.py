@@ -23,3 +23,12 @@ def set_properties(project):
 @task
 def run(project):
     subprocess.run([sys.executable, "-m", "src.main"])
+
+@task
+def ruff(project, logger):
+    result = subprocess.run(["ruff", "check", "."], capture_output=True, text=True)
+
+    if result.returncode != 0:
+        logger.warn(result.stdout)
+    else:
+        logger.info("Ruff check passed!")
