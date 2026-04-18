@@ -1,7 +1,8 @@
 #   -*- coding: utf-8 -*-
-from pybuilder.core import use_plugin, init, task
 import subprocess
 import sys
+
+from pybuilder.core import init, task, use_plugin
 
 use_plugin("python.core")
 use_plugin("python.unittest")

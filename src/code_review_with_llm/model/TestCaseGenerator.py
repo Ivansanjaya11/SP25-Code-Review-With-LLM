@@ -1,15 +1,17 @@
-import types
-from src.code_review_with_llm.output_objects.TestCase import TestCase
-from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
-from pathlib import Path
-import requests
-import sys
 import builtins
 import importlib.util
 import inspect
-from hypothesis.extra import ghostwriter
-from src.code_review_with_llm.model.MockDummy import MockDummy
 import shutil
+import sys
+import types
+from pathlib import Path
+
+import requests
+from hypothesis.extra import ghostwriter
+
+from src.code_review_with_llm.model.MockDummy import MockDummy
+from src.code_review_with_llm.output_objects.PullRequestInfo import PullRequestInfo
+from src.code_review_with_llm.output_objects.TestCase import TestCase
 
 """
 Class that generates test cases
@@ -20,7 +22,7 @@ class TestCaseGenerator:
 
     def get_test_cases(self) -> list[TestCase]:
         return self.generated_test_cases
-    
+
     def generate(self, pull_request_info: PullRequestInfo) -> list[TestCase]:
         pull_request = pull_request_info.get_pull_request()
 
@@ -53,18 +55,18 @@ class TestCaseGenerator:
         self._delete_dir(root_dir / "src" / ".hypothesis")
 
         return self.generated_test_cases
-    
+
     def generate_all_test_cases(self, filepath_dir: Path, test_cases_output_dir: Path) -> None:
         # iterate through every file in the directory
         # then create & save the test for the file
         for filepath in filepath_dir.iterdir():
-            if filepath.name.endswith(".py") and not "test" in filepath.name and not filepath.name.startswith("_"):
+            if filepath.name.endswith(".py") and "test" not in filepath.name and not filepath.name.startswith("_"):
                 print(f"Attempting to generate test case for {filepath}.....")
                 self.generated_test_cases.append(TestCase(filepath.name, filepath))
                 self.create_and_save_tests(filepath, test_cases_output_dir)
                 print()
-    
-    def create_and_save_tests(self, file_path: Path, test_cases_output_dir: Path) -> None:        
+
+    def create_and_save_tests(self, file_path: Path, test_cases_output_dir: Path) -> None:
         file_name = file_path.stem
         test_file_name = f"{file_name}_TEST"
 
@@ -72,9 +74,9 @@ class TestCaseGenerator:
         test_code = self.generate_tests_from_file(file_path)
 
         if not test_code.strip():
-            print(f"No test cases generated!")
+            print("No test cases generated!")
             return
-        
+
         output_filepath = test_cases_output_dir / test_file_name
 
         self.generated_test_cases[-1].set_test(test_code)
@@ -83,7 +85,7 @@ class TestCaseGenerator:
         output_filepath.write_text(test_code, encoding="utf-8")
 
         print(f"Test case saved in {str(output_filepath)}")
- 
+
     def generate_tests_from_file(self, file_path: Path) -> str:
         module = self._safe_import(file_path)
 
@@ -101,18 +103,18 @@ class TestCaseGenerator:
                     output.append(test_code)
                 except Exception as e:
                     print(f"skip function {name}: {e}")
-                
-        print(f"Ghostwriter finished attempting to generate test code!")
+
+        print("Ghostwriter finished attempting to generate test code!")
 
         return "\n\n".join(output)
-    
+
     def _safe_import(self, file_path: Path) -> str:
         # store the original mechanism to find what and how to load modules to the file
         original_import = builtins.__import__
         # store the original dictionary of imported module names
         original_modules = sys.modules.copy()
-        print(f"original import and module temporarily overriden!")
-        
+        print("original import and module temporarily overriden!")
+
         # create dummy imports for dependency modules
         builtins.__import__ = self._mock_import
 
@@ -137,7 +139,7 @@ class TestCaseGenerator:
             sys.modules.clear()
             # update the environment with the original modules
             sys.modules.update(original_modules)
-            print(f"original import and module fetched back.")
+            print("original import and module fetched back.")
 
     def _mock_import(self, name, globals=None, locals=None, fromlist=(), level=0) -> MockDummy | types.ModuleType:
             # if environment doesn't have the dependency, then create a dummy module
@@ -145,7 +147,7 @@ class TestCaseGenerator:
                 sys.modules[name] = MockDummy()
                 print(f"Mock module created for {name}!")
             return sys.modules[name]
-    
+
     def _delete_dir(self, directory: Path) -> None:
         if  directory.exists() and directory.is_dir():
             try:

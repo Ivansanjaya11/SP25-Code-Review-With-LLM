@@ -1,5 +1,6 @@
 from src.code_review_with_llm.output_objects.Analysis import Analysis
 
+
 class RepositoryInfo:
     '''
     Object that holds the details of a repository to be used by PullRequestInfo'''
@@ -16,16 +17,16 @@ class RepositoryInfo:
 
     def get_repo_details(self) -> str:
         return self.repo_details
-    
+
     def get_repo_name(self) -> str:
         return self.repo_name
 
     def get_repo_owner(self) -> str:
         return self.repo_owner
-    
+
     def get_branches_names(self) -> list[str]:
         return self.branches_names
-    
+
     def get_repo_url(self) -> str:
         return self.repo_url
 

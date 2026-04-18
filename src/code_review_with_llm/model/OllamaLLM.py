@@ -1,7 +1,10 @@
-from src.code_review_with_llm.model.LLM import LLM
 import json
+
 import ollama
+
+from src.code_review_with_llm.model.LLM import LLM
 from src.code_review_with_llm.output_objects.Error import Error
+
 
 class OllamaLLM(LLM):
     def __init__(self, model="llama3:latest", host="http://localhost:11434"):

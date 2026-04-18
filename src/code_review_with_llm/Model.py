@@ -1,10 +1,10 @@
+from src.code_review_with_llm.model.GeminiLLM import GeminiLLM
+from src.code_review_with_llm.model.OllamaLLM import OllamaLLM
 from src.code_review_with_llm.model.Pipeline1 import Pipeline1
 from src.code_review_with_llm.model.Pipeline2 import Pipeline2
 from src.code_review_with_llm.model.Pipeline3 import Pipeline3
 from src.code_review_with_llm.output_objects.Analysis import Analysis
 from src.code_review_with_llm.output_objects.Output import Output
-from src.code_review_with_llm.model.GeminiLLM import GeminiLLM
-from src.code_review_with_llm.model.OllamaLLM import OllamaLLM
 
 """
 Model class based on the MVC architecture.

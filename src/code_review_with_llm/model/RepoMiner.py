@@ -1,9 +1,12 @@
-from pydriller import Repository
-from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
-from src.code_review_with_llm.output_objects.Analysis import Analysis
-from github import Github, Auth
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
+from github import Auth, Github
+from pydriller import Repository
+
+from src.code_review_with_llm.output_objects.Analysis import Analysis
+from src.code_review_with_llm.output_objects.RepositoryInfo import RepositoryInfo
+
 
 class RepoMiner:
     '''
@@ -38,7 +41,7 @@ class RepoMiner:
         full_repo_name = f"{self.repo_owner}/{self.repo_name}"
         repo = self.g.get_repo(full_repo_name)
 
-        print(f"Repository fetched!")
+        print("Repository fetched!")
 
         repo_description = repo.description
         repo_branches_names = [branch.name for branch in repo.get_branches()]
@@ -61,7 +64,7 @@ class RepoMiner:
         self.repository_info.set_repo_description(repo_description)
         self.repository_info.set_branches_names(repo_branches_names)
 
-        print(f"Repository info generated!")
+        print("Repository info generated!")
 
     def get_repository_info(self) -> RepositoryInfo:
         return self.repository_info

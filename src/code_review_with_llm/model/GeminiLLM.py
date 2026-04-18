@@ -1,10 +1,13 @@
-from google import genai
-from src.code_review_with_llm.model.LLM import LLM
-import os
-from dotenv import load_dotenv
 import json
-from src.code_review_with_llm.output_objects.Error import Error
+import os
 import time
+
+from dotenv import load_dotenv
+from google import genai
+
+from src.code_review_with_llm.model.LLM import LLM
+from src.code_review_with_llm.output_objects.Error import Error
+
 
 class GeminiLLM(LLM):
     def __init__(self):
@@ -37,7 +40,7 @@ class GeminiLLM(LLM):
                     time.sleep(15)
                 else:
                     raise e
-    
+
         raise Exception("Gemini API failed after 3 retries")
 
 
@@ -66,14 +69,14 @@ class GeminiLLM(LLM):
 
                 error_response = get_error_response.text
                 return error_response
-            
+
             except Exception as e:
                 if "503" in str(e) or "429" in str(e):
                     print(f"API error, retrying in 15 seconds... ({attempt + 1}/3)")
                     time.sleep(15)
                 else:
                     raise e
-                
+
         raise Exception("Gemini API failed after 3 tries")
 
     def request_suggestion(self, error: Error) -> Error:
@@ -106,7 +109,7 @@ class GeminiLLM(LLM):
                     contents=formatted_prompt,
                 )
 
-                suggestion_response = suggestion_response.text  
+                suggestion_response = suggestion_response.text
                 suggestion_response_parsed = json.loads(suggestion_response)['suggestions'][0]['suggestion']
                 error.set_fix_suggestion(suggestion_response_parsed)
 
@@ -117,5 +120,5 @@ class GeminiLLM(LLM):
                     time.sleep(15)
                 else:
                     raise e
-                
+
         raise Exception("Gemini API failed after 3 tries")

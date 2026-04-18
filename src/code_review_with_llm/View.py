@@ -1,6 +1,8 @@
-import customtkinter as ctk
-import threading
 import json
+import threading
+
+import customtkinter as ctk
+
 from src.code_review_with_llm.output_objects.Analysis import Analysis
 
 """

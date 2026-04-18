@@ -1,9 +1,11 @@
-import os
 import json
+import os
+
+from pydantic import BaseModel
+
 from src.code_review_with_llm.output_objects.Error import Error
 from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
-from pydantic import BaseModel
-from pathlib import Path
+
 
 class LLM:
     def __init__(self, model, prompt_config_path=None):
@@ -17,7 +19,7 @@ class LLM:
                 "MODIFY_PARAMETER_VARIABLE_ERROR, OFF_BY_ONE_ERROR, ARITHMETIC_ERROR," \
                 "BOUNDS_ERROR, UNINITIALIZED_ARRAY_ERROR, SQUELCH_EXCEPTION_ERROR," \
                 "MAGIC_NUMBER_ERROR, DANGLING_ELSE_ERROR"
-        
+
         # get the prompts from the json file
         try:
             with open(prompt_config_path, "r", encoding="utf-8") as file:
@@ -42,7 +44,7 @@ class LLM:
                 print(f"Get repo analysis prompt fetched:{self.get_repo_analysis_prompt}")
 
                 print(f"\n'{prompt_config_path}' successfully loaded!")
-                
+
         except FileNotFoundError:
             print(f"Error: The file '{prompt_config_path}' was not found.")
         except json.JSONDecodeError as e:
@@ -52,18 +54,18 @@ class LLM:
         pass
 
     def execute(self, code: str) -> FeedbackOutput:
-        print(f"Requesting feedback.....")
+        print("Requesting feedback.....")
 
         error_response = self.request_error(code)
         errors = self.parse_error_response(error_response, code)
-        
-        print(f"Feedback successfully generated!")
 
-        print(f"Requesting suggestions.....")
+        print("Feedback successfully generated!")
+
+        print("Requesting suggestions.....")
 
         errors = self.get_all_fix_suggestions(errors)
 
-        print(f"Suggestions successfully generated!")
+        print("Suggestions successfully generated!")
 
         feedback_output = FeedbackOutput(errors)
 
@@ -76,12 +78,12 @@ class LLM:
         """
         parse the json-like string into a json object.
         Then create Error objects containing all the information
-        """   
+        """
         if error_response == "NONE":
             return []
-        
+
         error_response = json.loads(error_response)
-        
+
         parsed_errors = error_response['errors'] # end result or parsing the error response from LLM: a list of error information in consistent format
 
         # Create a list of Error objects. Assign error type, severity level, and error description generated from llm
@@ -96,7 +98,7 @@ class LLM:
             errors.append(error)
 
         return errors
-    
+
     def request_suggestion(self, error: Error) -> Error:
         raise NotImplementedError("Subclasses must implement request_suggestion")
 
@@ -113,16 +115,16 @@ class LLM:
     class RepoAnalysisFormat(BaseModel):
         analysis: str
 
-    # json schema (format) for a list of get error LLM outputs 
+    # json schema (format) for a list of get error LLM outputs
     class ErrorListFormat(BaseModel):
-        # json schema (format) for get error LLM output 
+        # json schema (format) for get error LLM output
         class ErrorGetterFormat(BaseModel):
                 error_type: str
                 severity: str
                 description: str
         errors: list[ErrorGetterFormat]
 
-    # json schema (format) for a list of get suggestion LLM output 
+    # json schema (format) for a list of get suggestion LLM output
     class SuggestionListFormat(BaseModel):
         # json schema (format) for get suggestion LLM output
         class SuggestionGetterFormat(BaseModel):

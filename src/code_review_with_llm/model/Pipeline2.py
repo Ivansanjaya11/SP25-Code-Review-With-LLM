@@ -1,7 +1,7 @@
-from src.code_review_with_llm.model.Pipeline import Pipeline
 from src.code_review_with_llm.model.JSONParser import JSONParser
-from src.code_review_with_llm.output_objects.Output import Output
 from src.code_review_with_llm.model.PDFGenerator import PDFGenerator
+from src.code_review_with_llm.model.Pipeline import Pipeline
+from src.code_review_with_llm.output_objects.Output import Output
 
 """
 Pipeline 2:

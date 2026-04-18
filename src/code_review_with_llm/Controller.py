@@ -1,9 +1,9 @@
-from src.code_review_with_llm.Model import Model
-from src.code_review_with_llm.View import View
 from typing import Any
 
+from src.code_review_with_llm.Model import Model
 from src.code_review_with_llm.output_objects.Analysis import Analysis
 from src.code_review_with_llm.output_objects.Output import Output
+from src.code_review_with_llm.View import View
 
 """
 Controller class based on the MVC architecture

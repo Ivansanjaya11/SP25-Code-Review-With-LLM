@@ -12,18 +12,18 @@ class Error:
 
     def get_error_type(self) -> str:
         return self.error_type
-    
+
     def get_error_severity_level(self) -> str:
         return self.error_severity_level
-    
+
     def get_error_description(self) -> str:
         return self.error_description
-    
+
     def get_fix_suggestion(self) -> str:
         return self.fix_suggestion
-    
+
     def get_code(self) -> str:
         return self.code
-    
+
     def set_fix_suggestion(self, fix_suggestion: str) -> None:
         self.fix_suggestion = fix_suggestion

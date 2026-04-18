@@ -1,10 +1,13 @@
-from src.code_review_with_llm.output_objects.Output import Output
 import os
 from pathlib import Path
-from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
+
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+
+from src.code_review_with_llm.output_objects.FeedbackOutput import FeedbackOutput
+from src.code_review_with_llm.output_objects.Output import Output
+
 
 class PDFGenerator:
     def __init__(self, output: Output):
@@ -56,7 +59,7 @@ class PDFGenerator:
             elements.append(Paragraph(f"<b>Error Type:</b> {error.get_error_type()}", styles['Normal']))
             elements.append(Paragraph(f"<b>Severity:</b> {error.get_error_severity_level()}", styles['Normal']))
             elements.append(Paragraph(f"<b>Description:</b> {error.get_error_description()}", styles['Normal']))
-            elements.append(Paragraph(f"<b>Suggestion:</b> {error.get_fix_suggestion()}", styles['Normal'])) 
+            elements.append(Paragraph(f"<b>Suggestion:</b> {error.get_fix_suggestion()}", styles['Normal']))
             elements.append(Spacer(1, 12))
 
         doc.build(elements)

@@ -1,5 +1,7 @@
 from _datetime import datetime
+
 from src.code_review_with_llm.output_objects.Error import Error
+
 
 class FeedbackOutput:
     '''
@@ -12,13 +14,13 @@ class FeedbackOutput:
 
     def get_all_errors(self) -> list[Error]:
         return self.errors
-    
+
     def get_timestamp(self) -> datetime:
         return self.timestamp
 
     def add_error(self, error: Error) -> None:
         self.errors.append(error)
-    
+
     def __str__(self) -> str:
         string = f"Timestamp: {self.timestamp}\n"
 
