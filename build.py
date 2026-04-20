@@ -18,7 +18,7 @@ def set_properties(project):
     project.depends_on_requirements("requirements.txt")
 
     project.set_property("dir_source_main_python", "src")
-    project.set_property("dir_source_unittest_python", "src/unittest")
+    project.set_property("dir_source_unittest_python", "tests")
     project.set_property("dir_source_main_scripts", "src")
 
 @task
