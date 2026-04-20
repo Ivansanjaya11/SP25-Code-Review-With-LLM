@@ -12,3 +12,5 @@ pybuilder
 google-genai
 tqdm
 ruff
+pytest
+pytest-cov
