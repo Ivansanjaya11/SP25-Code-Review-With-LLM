@@ -13,7 +13,7 @@ class JSONSaver:
         self.output = output
         self.path = None
 
-    def create_path(self, feedback: FeedbackOutput, pr_id: int, repo_name: str) -> None:
+    def _create_path(self, feedback: FeedbackOutput, pr_id: int, repo_name: str) -> None:
         month = feedback.get_timestamp().month
         year = feedback.get_timestamp().year
         day = feedback.get_timestamp().day
@@ -35,7 +35,7 @@ class JSONSaver:
         feedback = self.output.get_feedback_output()
         test_cases = self.output.get_test_cases()
 
-        self.create_path(feedback, pr_info.get_id(), pr_info.get_repo_info().get_repo_name())
+        self._create_path(feedback, pr_info.get_id(), pr_info.get_repo_info().get_repo_name())
 
         data = {
             "pr_info": {

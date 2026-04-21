@@ -19,18 +19,18 @@ class JSONParser:
         self.outputs = []
 
     # for now, the filter is based on month and year only
-    def filter_and_parse(self, repo_name = "", repo_id = -1, month=-1, year=-1, day=-1) -> list[Output]:
+    def filter_and_parse(self, month=-1, year=-1) -> list[Output]:
         # parse every json files in results directory recursively
-        if repo_name == "" and repo_id == -1 and month == -1 and year == -1 and day == -1:
-            self.parse_everything()
+        if month == -1 and year == -1:
+            self._parse_everything()
 
         # parse by a specific year and month
         if month != -1 and year != -1:
-            self.parse_by_month_year(month, year)
+            self._parse_by_month_year(month, year)
 
         return self.outputs
 
-    def parse_by_month_year(self, month, year) -> None:
+    def _parse_by_month_year(self, month, year) -> None:
 
         # create the path of the specific month and year director
         a_dir_path = (Path("results") / f"{str(year)}_{str(month)}").resolve()
@@ -46,7 +46,7 @@ class JSONParser:
             output = self.parse(a_file_path)
             self.outputs.append(output)
 
-    def parse_everything(self) -> None:
+    def _parse_everything(self) -> None:
         # iterate through each year_month directory
         for directory in Path("results").iterdir():
             output_list = []
