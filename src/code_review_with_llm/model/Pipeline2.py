@@ -17,12 +17,12 @@ class Pipeline2(Pipeline):
         self.year2 = year2
         self.is_pdf = is_pdf
 
-    def parse(self, month: int, year: int) -> list[Output]:
+    def _parse(self, month: int, year: int) -> list[Output]:
         json_parser = JSONParser()
         self.output_list = json_parser.filter_and_parse(month=month, year=year)
 
         if self.is_pdf:
-            self.generate_pdf(self.output_list)
+            self._generate_pdf(self.output_list)
 
         return self.output_list
 
@@ -31,12 +31,12 @@ class Pipeline2(Pipeline):
 
         for year in range(self.year1, self.year2 + 1):
             for month in range(self.month1, self.month2 + 1):
-                output_list = self.parse(month, year)
+                output_list = self._parse(month, year)
                 outputs_list.append(output_list)
 
         return outputs_list
 
-    def generate_pdf(self, output_list: list[Output]) -> None:
+    def _generate_pdf(self, output_list: list[Output]) -> None:
         for out in output_list:
             pdf = PDFGenerator(out)
             pdf.generate()

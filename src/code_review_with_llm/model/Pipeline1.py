@@ -45,11 +45,11 @@ class Pipeline1(Pipeline):
 
             # step 6: generate pdf (optional)
             if self.is_pdf:
-                self.generate_pdf(output)
+                self._generate_pdf(output)
 
         return self.output_list
 
-    def generate_pdf(self, output: Output) -> None:
+    def _generate_pdf(self, output: Output) -> None:
             pdf = PDFGenerator(output)
             pdf.generate()
             print('PDF Generated!')

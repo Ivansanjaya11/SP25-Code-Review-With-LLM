@@ -24,7 +24,6 @@ class Pipeline3(Pipeline):
         print("Requesting repo analysis.....")
 
         for an_analysis in tqdm(analysis_list, desc="analyzing repo"):
-        #for an_analysis in analysis_list:
             changes = an_analysis.get_changes()
             analysis = self.llm.request_repo_analysis(changes)
             an_analysis.set_analysis(analysis)
