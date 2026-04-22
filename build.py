@@ -26,6 +26,10 @@ def run(project):
     subprocess.run([sys.executable, "-m", "src.main"])
 
 @task
+def test(project):
+    subprocess.run(["pytest"])
+
+@task
 def ruff(project, logger):
     result = subprocess.run(["ruff", "check", "."], capture_output=True, text=True)
 

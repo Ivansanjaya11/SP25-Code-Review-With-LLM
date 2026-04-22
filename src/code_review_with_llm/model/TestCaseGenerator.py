@@ -48,7 +48,7 @@ class TestCaseGenerator:
                 file_path.write_text(file_content, encoding="utf-8")
 
         # generate the test cases for the files inside temp dir and save the result to out dir
-        self.generate_all_test_cases(temp_dir, out_dir)
+        self._generate_all_test_cases(temp_dir, out_dir)
 
         # clean environment
         self._delete_dir(temp_dir)
@@ -56,22 +56,22 @@ class TestCaseGenerator:
 
         return self.generated_test_cases
 
-    def generate_all_test_cases(self, filepath_dir: Path, test_cases_output_dir: Path) -> None:
+    def _generate_all_test_cases(self, filepath_dir: Path, test_cases_output_dir: Path) -> None:
         # iterate through every file in the directory
         # then create & save the test for the file
         for filepath in filepath_dir.iterdir():
             if filepath.name.endswith(".py") and "test" not in filepath.name and not filepath.name.startswith("_"):
                 print(f"Attempting to generate test case for {filepath}.....")
                 self.generated_test_cases.append(TestCase(filepath.name, filepath))
-                self.create_and_save_tests(filepath, test_cases_output_dir)
+                self._create_and_save_tests(filepath, test_cases_output_dir)
                 print()
 
-    def create_and_save_tests(self, file_path: Path, test_cases_output_dir: Path) -> None:
+    def _create_and_save_tests(self, file_path: Path, test_cases_output_dir: Path) -> None:
         file_name = file_path.stem
         test_file_name = f"{file_name}_TEST"
 
         # generate test from file
-        test_code = self.generate_tests_from_file(file_path)
+        test_code = self._generate_tests_from_file(file_path)
 
         if not test_code.strip():
             print("No test cases generated!")
@@ -86,7 +86,7 @@ class TestCaseGenerator:
 
         print(f"Test case saved in {str(output_filepath)}")
 
-    def generate_tests_from_file(self, file_path: Path) -> str:
+    def _generate_tests_from_file(self, file_path: Path) -> str:
         module = self._safe_import(file_path)
 
         if not module:

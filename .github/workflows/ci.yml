@@ -22,8 +22,8 @@ jobs:
       - name: Style check with Ruff
         run: pyb ruff
 
-      #- name: Run tests
-      #  run: pyb test
+      - name: Run tests
+        run: pyb test
 
       - name: Run the code
         run: pyb
