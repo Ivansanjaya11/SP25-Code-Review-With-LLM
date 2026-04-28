@@ -7,7 +7,7 @@ on the code reviewers so they can shift their focus to other tasks.
 ### Analyze Pull Request
 This feature will receieve as input a github repository url and a pull request number. It will then collect the final version of each commit 
 file in the pull request and send them to an llm prompting for code review. After the analysis is complete it will print the analysis on the 
-screen and save it to a json file.
+screen and save it to a json file. The system also allows saving analysis result into a pdf file.
 
 ### Saved Feedback
 This feature gives the ability to search for previously ran analysis by using a date range.
