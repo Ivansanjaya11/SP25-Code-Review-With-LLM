@@ -1,5 +1,4 @@
 import os
-
 from src.code_review_with_llm.Controller import Controller
 from src.code_review_with_llm.Model import Model
 from src.code_review_with_llm.View import View
