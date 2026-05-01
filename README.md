@@ -106,6 +106,12 @@ SP25-Code-Review-With-LLM/
 pyb
 ```
 
+# Testing
+To run test cases, use the command:
+```
+pyb test
+```
+
 # Contributors
 Ivan Sanjaya  
 George Candal

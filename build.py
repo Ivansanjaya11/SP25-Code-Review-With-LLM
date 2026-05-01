@@ -27,7 +27,7 @@ def run(project):
 
 @task
 def test(project):
-    subprocess.run(["pytest"])
+    subprocess.run(["pytest", "tests/", "--cov=src", "--cov-report=term-missing"])
 
 @task
 def ruff(project, logger):
